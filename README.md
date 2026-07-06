@@ -1,10 +1,18 @@
 # Bagels Panpan. 公式ホームページ
 
 東京都板橋区・中板橋のベーグル専門店「Bagels Panpan.」の1ページ完結型公式サイトです。
+実店舗（ネイビーの看板・白文字ロゴ・丸いロゴマーク）に合わせたネイビー基調のデザイン。
 
 - フレームワーク: [Next.js](https://nextjs.org)（App Router） + TypeScript
 - スタイル: Tailwind CSS v4
 - フォント: Quicksand（英字） / Noto Sans JP（日本語）
+
+## 営業情報（2026年7月時点）
+
+- 営業日：水・金・土
+- 営業時間：12:00〜売り切れまで
+- 定休日：月・火・木・日・祝日
+- 注意：オープン時間は変更になる可能性があります。最新情報は随時Instagramにてお知らせします。
 
 ## 開発コマンド
 
@@ -24,6 +32,7 @@ npm run lint     # ESLint
 | --- | --- |
 | `siteUrl` | サイトのURL（独自ドメイン取得後に変更） |
 | `shopInfo` | 店名・住所・アクセス・サービス・支払い方法・ブランドコピー |
+| `brandImages` | ロゴ・店舗外観・OGP画像のパス |
 | `businessHours` | 営業日・営業時間・定休日・注意書き |
 | `weekDays` / `openWeekDays` | Access の営業日カレンダーチップ用 |
 | `heroBadges` | Hero の英字情報バッジ |
@@ -31,25 +40,29 @@ npm run lint     # ESLint
 | `conceptScenes` | Concept の「朝ごはん・ランチ・手土産」ミニカード |
 | `faqItems` | FAQ の質問と回答 |
 | `socialLinks` | Instagram・食べログの URL |
-| `googleMapsUrl` | 「Google Mapで見る」リンク（住所から自動生成） |
-| `instagramCards` | Instagram セクションの仮カード文言 |
+| `googleMapsUrl` / `shopLatLng` | Google Map のプレイスURLと座標 |
+| `instagramCards` | Instagram セクションの発信内容リスト |
 
-営業日や商品内容は変わる可能性があるため、サイト内には「最新情報はInstagramをご確認ください」という導線を各所に入れています。文言を変える場合も `data/site.ts` の `instagramNote` などを編集してください。
+営業日やオープン時間は変わる可能性があるため、サイト内には「最新情報はInstagramをご確認ください」という導線を各所に入れています。
 
 `TODO:` コメントが付いている箇所は、情報確定後に差し替えが必要な場所です。エディタで「TODO」を検索すると一覧できます。
 
-## 写真の差し替え方法
+## 画像の差し替え方法
 
-写真は **`public/images/`** に置きます。
+画像は **`public/images/`** に置きます。ブランド画像は以下の3つです。
 
-1. **Hero（トップの大きなビジュアル）**
-   `components/Hero.tsx` の TODO コメントの位置で、`BagelGraphic`（仮の円形グラフィック）を `next/image` の `<Image src="/images/hero.jpg" ... />` に差し替えます。
-2. **メニューの商品写真**
-   `public/images/plain.jpg` のように写真を置き、`data/site.ts` の各商品の `image` に `"/images/plain.jpg"` を設定します。設定した商品だけ写真表示に切り替わります（未設定の商品は仮グラフィックのまま）。
-3. **OGP 画像（SNS シェア時の画像）**
-   `public/images/og-image.png`（1200×630px）を実際の写真入り画像に上書きします。
-4. **favicon**
-   `app/icon.svg` を差し替えます（SVG のほか `app/icon.png` でも可）。
+| ファイル | 用途 | 現状 |
+| --- | --- | --- |
+| `panpan-logo-circle.jpg` | 丸いネイビーロゴ（Header・Footer・Instagramカード等） | 生成した仮ロゴ入り。実際のInstagramアイコン画像に上書き可 |
+| `panpan-storefront.jpg` | 店舗外観写真（Hero・Access） | **未配置**。置いて再ビルドすると自動で写真表示に切り替わります |
+| `ogp-placeholder.jpg` | OGP画像（SNSシェア用 1200×630px） | 生成した仮画像入り。実写真入りに上書き可 |
+
+その他:
+
+1. **メニューの商品写真** — `public/images/plain.jpg` のように置き、`data/site.ts` の各商品の `image` に `"/images/plain.jpg"` を設定
+2. **favicon** — `app/icon.svg` を差し替え（ネイビーの丸ロゴ）
+
+写真を追加・上書きしたら、GitHubへ push すると Vercel が自動で再ビルドして反映します。
 
 ## Google Map
 
@@ -60,25 +73,22 @@ npm run lint     # ESLint
 ## SEO / OGP / 構造化データ
 
 `app/layout.tsx` の `metadata` で title / description / OGP を設定しています。
-`app/page.tsx` には LocalBusiness（Bakery）の JSON-LD 構造化データを埋め込んでいます。
-独自ドメインを取得したら `data/site.ts` の `siteUrl` を変更してください（metadata と JSON-LD の両方に反映されます）。
+`app/page.tsx` には LocalBusiness（Bakery）の JSON-LD 構造化データを埋め込んでいます（閉店時刻は「売り切れ次第」のため記載していません）。
+独自ドメインを取得したら `data/site.ts` の `siteUrl` を変更してください。
 
 ## カラーパレット
 
-`app/globals.css` の `@theme` で定義しています（`bg-cream` `text-cocoa` などのクラスで使用）。
+`app/globals.css` の `@theme` で定義しています（`bg-navy` `text-ink` などのクラスで使用）。
 
-- `cream #FFF8EF` ベース背景 / `soft #FFFCF7` カード背景
-- `crust #B9855A` メインの焼き色 / `toast #E8A15A` アクセント
-- `wheat #F3E1C8` サブ / `milk #FFF1DD` セクション背景
-- `cocoa #3A2A1F` テキスト / `espresso #2B1C14` フッター
+- `navy #102050` メイン / `navy-deep #081A3D` Hero・Footer / `navy-soft #33446C` / `navy-storefront #25385F`
+- `paper #F7F3EC` ロゴの白 / `warm #FFFDF8` ベース背景 / `cream #F6F0E7` セクション背景
+- `bagel #B97945` 焼き色 / `toast #D3914A` 明るい焼き色（アクセント）
+- `ink #1E2430` 本文 / `muted #7A7D86` 補足 / `line #E7E0D6` 罫線
 
 ## Vercel へのデプロイ
 
-1. このリポジトリを GitHub にプッシュ
-2. [Vercel](https://vercel.com) で「New Project」→ リポジトリを選択
-3. 設定はデフォルトのまま「Deploy」（Next.js が自動認識されます）
-
-以降は `main` ブランチにプッシュするたびに自動でデプロイされます。
+GitHub リポジトリ（kubon0930/bagels-panpan）と Vercel が連携済みです。
+`main` ブランチに push するたびに自動でデプロイされます。
 
 ## ディレクトリ構成
 
@@ -86,5 +96,6 @@ npm run lint     # ESLint
 app/            レイアウト・トップページ・グローバルCSS・favicon
 components/     セクションごとのコンポーネント（Header, Hero, Menu など）
 data/site.ts    店舗情報・営業情報・メニュー・FAQ・SNSリンク（編集はここ）
+lib/images.ts   画像の存在チェック（写真差し替えの自動切り替え用）
 public/images/  写真置き場（差し替え用）
 ```

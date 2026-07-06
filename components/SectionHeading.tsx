@@ -18,15 +18,15 @@ export default function SectionHeading({
   return (
     <div className={`${alignClass} space-y-4`}>
       {eyebrow && (
-        <p className="font-display text-sm font-semibold uppercase tracking-[0.25em] text-crust">
+        <p className="font-display text-sm font-semibold uppercase tracking-[0.25em] text-bagel">
           {eyebrow}
         </p>
       )}
-      <h2 className="text-2xl font-bold leading-relaxed tracking-wide sm:text-3xl md:text-4xl">
+      <h2 className="text-2xl font-bold leading-relaxed tracking-wide text-navy sm:text-3xl md:text-4xl">
         {title}
       </h2>
       {description && (
-        <p className="mx-auto max-w-2xl leading-loose text-cocoa/75">
+        <p className="mx-auto max-w-2xl leading-loose text-ink/75">
           {description}
         </p>
       )}

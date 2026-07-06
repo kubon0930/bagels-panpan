@@ -13,10 +13,10 @@ type ToneColors = {
 };
 
 const tones: Record<BagelTone, ToneColors> = {
-  golden: { hi: "#f6c48d", mid: "#e8a15a", deep: "#c98a4b", shine: "#f9d9ae", edge: "#b9855a" },
-  cheese: { hi: "#f8d189", mid: "#eeb254", deep: "#d3963d", shine: "#fbe3ae", edge: "#c08a36" },
-  chocolate: { hi: "#c79a74", mid: "#a9714b", deep: "#8a5734", shine: "#d9b492", edge: "#7c4a2d" },
-  seasonal: { hi: "#f2b295", mid: "#e08d62", deep: "#c06f47", shine: "#f7cdb4", edge: "#a95f3c" },
+  golden: { hi: "#e9be83", mid: "#d3914a", deep: "#b97945", shine: "#f2d5ac", edge: "#9c6136" },
+  cheese: { hi: "#f0cc7e", mid: "#dfa852", deep: "#c08a3e", shine: "#f7e2af", edge: "#a9772f" },
+  chocolate: { hi: "#b98a64", mid: "#96603c", deep: "#7a4c2e", shine: "#d0a886", edge: "#6b4128" },
+  seasonal: { hi: "#e8a783", mid: "#cf7e52", deep: "#b0623c", shine: "#f2c7ac", edge: "#995434" },
 };
 
 type BagelGraphicProps = {
@@ -87,14 +87,14 @@ export default function BagelGraphic({
       />
 
       {/* ごまの粒 */}
-      <ellipse cx="58" cy="52" rx="4" ry="2.2" fill="#fff3e0" transform="rotate(-32 58 52)" />
-      <ellipse cx="92" cy="36" rx="4" ry="2.2" fill="#fff3e0" transform="rotate(8 92 36)" />
-      <ellipse cx="130" cy="42" rx="4" ry="2.2" fill="#fff3e0" transform="rotate(28 130 42)" />
-      <ellipse cx="156" cy="72" rx="4" ry="2.2" fill="#fff3e0" transform="rotate(55 156 72)" />
-      <ellipse cx="38" cy="88" rx="4" ry="2.2" fill="#fff3e0" transform="rotate(-68 38 88)" />
-      <ellipse cx="70" cy="70" rx="3.4" ry="1.9" fill="#8a5c36" transform="rotate(-15 70 70)" />
-      <ellipse cx="118" cy="60" rx="3.4" ry="1.9" fill="#8a5c36" transform="rotate(20 118 60)" />
-      <ellipse cx="146" cy="104" rx="3.4" ry="1.9" fill="#8a5c36" transform="rotate(80 146 104)" />
+      <ellipse cx="58" cy="52" rx="4" ry="2.2" fill="#f9f0e0" transform="rotate(-32 58 52)" />
+      <ellipse cx="92" cy="36" rx="4" ry="2.2" fill="#f9f0e0" transform="rotate(8 92 36)" />
+      <ellipse cx="130" cy="42" rx="4" ry="2.2" fill="#f9f0e0" transform="rotate(28 130 42)" />
+      <ellipse cx="156" cy="72" rx="4" ry="2.2" fill="#f9f0e0" transform="rotate(55 156 72)" />
+      <ellipse cx="38" cy="88" rx="4" ry="2.2" fill="#f9f0e0" transform="rotate(-68 38 88)" />
+      <ellipse cx="70" cy="70" rx="3.4" ry="1.9" fill="#7a4c2e" transform="rotate(-15 70 70)" />
+      <ellipse cx="118" cy="60" rx="3.4" ry="1.9" fill="#7a4c2e" transform="rotate(20 118 60)" />
+      <ellipse cx="146" cy="104" rx="3.4" ry="1.9" fill="#7a4c2e" transform="rotate(80 146 104)" />
     </svg>
   );
 }

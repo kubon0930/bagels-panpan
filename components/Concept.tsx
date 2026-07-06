@@ -1,3 +1,4 @@
+import BrandLogo from "@/components/BrandLogo";
 import FadeIn from "@/components/FadeIn";
 import SectionHeading from "@/components/SectionHeading";
 import SoftCurve from "@/components/SoftCurve";
@@ -41,38 +42,35 @@ export default function Concept() {
   return (
     <section id="concept">
       <SoftCurve />
-      <div className="bg-milk">
+      <div className="bg-cream">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
           <SectionHeading
             eyebrow="Concept"
             title={
               <>
-                <span className="font-display italic text-crust">panpan</span>
-                に込めた、
+                ネイビーの小さなお店から、
                 <br />
-                小さなしあわせ。
+                焼きたてのしあわせを。
               </>
             }
           />
 
-          <div className="mx-auto mt-10 max-w-2xl space-y-6 text-center leading-loose text-cocoa/85">
+          <div className="mx-auto mt-10 max-w-2xl space-y-6 text-center leading-loose text-ink/85">
             <p>
-              {shopInfo.name}
-              は、毎日の中にある小さな楽しみを大切にするベーグル専門店です。
+              {shopInfo.name}は、中板橋の街にある小さなベーグル専門店です。
+              <br />
+              ネイビーの扉を開けると、その日焼き上がったベーグルが並びます。
             </p>
             <p>
               外は香ばしく、中はもちっと。
               <br />
+              朝ごはんにも、ランチにも、誰かへの手土産にも。
+              <br />
               ひとつ食べるだけで、心もお腹も
-              <span className="font-display font-semibold italic text-crust">
+              <span className="font-display font-semibold italic text-bagel">
                 &ldquo;panpan&rdquo;
               </span>
               に満たされるようなベーグルを目指しています。
-            </p>
-            <p>
-              中板橋の街にそっと寄り添いながら、
-              <br />
-              その日焼き上がるベーグルをひとつひとつ丁寧にご用意しています。
             </p>
           </div>
 
@@ -80,12 +78,14 @@ export default function Concept() {
           <div className="mx-auto mt-12 grid max-w-3xl gap-4 sm:grid-cols-3">
             {conceptScenes.map((scene, index) => (
               <FadeIn key={scene.title} delay={index * 100}>
-                <div className="flex h-full flex-col items-center gap-3 rounded-card bg-soft px-5 py-7 text-center shadow-warm">
-                  <span className="grid h-14 w-14 place-items-center rounded-full bg-milk text-crust">
+                <div className="flex h-full flex-col items-center gap-3 rounded-card bg-warm px-5 py-7 text-center shadow-warm">
+                  <span className="grid h-14 w-14 place-items-center rounded-full bg-cream text-navy">
                     {sceneIcons[index]}
                   </span>
-                  <h3 className="font-bold tracking-wide">{scene.title}</h3>
-                  <p className="text-sm leading-relaxed text-cocoa/75">
+                  <h3 className="font-bold tracking-wide text-navy">
+                    {scene.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-ink/75">
                     {scene.text}
                   </p>
                 </div>
@@ -94,9 +94,12 @@ export default function Concept() {
           </div>
 
           {/* ブランドコピー */}
-          <p className="mt-14 text-center font-display text-lg font-semibold tracking-wider text-crust md:text-xl">
-            — {shopInfo.brandCopy} —
-          </p>
+          <div className="mt-14 flex items-center justify-center gap-4">
+            <BrandLogo size={44} className="shadow-warm" />
+            <p className="font-display text-lg font-semibold tracking-wider text-navy md:text-xl">
+              {shopInfo.brandCopy}
+            </p>
+          </div>
         </div>
       </div>
       <SoftCurve flip />

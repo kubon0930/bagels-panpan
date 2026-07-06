@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Quicksand } from "next/font/google";
-import { siteUrl } from "@/data/site";
+import { brandImages, siteUrl } from "@/data/site";
 import "./globals.css";
 
 const notoSansJp = Noto_Sans_JP({
@@ -20,18 +20,18 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Bagels Panpan.｜中板橋の手づくりベーグル専門店",
   description:
-    "Bagels Panpan.は、東京都板橋区・中板橋にある手づくりベーグル専門店です。営業日は火・水・金・土、11:00から売り切れまで。最新情報はInstagramをご確認ください。",
+    "Bagels Panpan.は、東京都板橋区・中板橋にある手づくりベーグル専門店です。営業日は水・金・土、12:00から売り切れまで。オープン時間は変更となる場合があるため、最新情報はInstagramをご確認ください。",
   openGraph: {
     title: "Bagels Panpan.｜中板橋の手づくりベーグル専門店",
     description:
-      "もちっと香ばしいベーグルを、毎日の小さなしあわせに。東京都板橋区常盤台のベーグル専門店です。",
+      "もちっと香ばしいベーグルを、毎日の小さなしあわせに。東京都板橋区常盤台のベーグル専門店です。営業日・オープン時間の最新情報はInstagramをご確認ください。",
     type: "website",
     locale: "ja_JP",
     siteName: "Bagels Panpan.",
-    // TODO: 実際のOGP画像（1200x630px）を public/images/og-image.png に置いて差し替えてください。
+    // TODO: 実際のOGP画像（1200x630px）を public/images/ogp-placeholder.jpg に上書きすると差し替わります。
     images: [
       {
-        url: "/images/og-image.png",
+        url: brandImages.ogp,
         width: 1200,
         height: 630,
         alt: "Bagels Panpan.｜中板橋の手づくりベーグル専門店",
@@ -50,7 +50,7 @@ export default function RootLayout({
       lang="ja"
       className={`${notoSansJp.variable} ${quicksand.variable} antialiased`}
     >
-      <body className="min-h-screen bg-cream text-cocoa">{children}</body>
+      <body className="min-h-screen bg-warm text-ink">{children}</body>
     </html>
   );
 }

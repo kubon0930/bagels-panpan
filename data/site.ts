@@ -21,32 +21,48 @@ export const shopInfo = {
   reservation: "予約不可",
   payment: "QRコード決済可（カード・電子マネー不可）",
   brandCopy: "もちっと、今日を満たすベーグル。",
+  /** 店頭の目印（Access で使用） */
+  landmark: "ネイビーの外観と「Bagels Panpan.」の白い看板が目印です。",
+} as const;
+
+/** ブランド画像のパス。public/images/ に同名ファイルを置くと反映されます。 */
+export const brandImages = {
+  /** Instagramアイコン風の丸いネイビーロゴ */
+  logo: "/images/panpan-logo-circle.jpg",
+  /** 店舗外観写真（ネイビーの看板と白いタペストリー） */
+  storefront: "/images/panpan-storefront.jpg",
+  /** OGP画像（SNSシェア用 1200x630） */
+  ogp: "/images/ogp-placeholder.jpg",
 } as const;
 
 export const businessHours = {
   /** 短い表記（ヘッダー・フッター用） */
-  openDaysShort: "火・水・金・土",
+  openDaysShort: "水・金・土",
   /** 長い表記（FAQ・本文用） */
-  openDaysLong: "火曜日・水曜日・金曜日・土曜日",
-  hours: "11:00〜売り切れまで",
-  closedDaysShort: "日・月・木・祝日",
-  closedDaysLong: "日曜日・月曜日・木曜日・祝日",
+  openDaysLong: "水曜日・金曜日・土曜日",
+  hours: "12:00〜売り切れまで",
+  closedDaysShort: "月・火・木・日・祝日",
+  closedDaysLong: "月曜日・火曜日・木曜日・日曜日・祝日",
   irregularNote: "臨時休業あり",
   /** Hero などで1行で見せる表記 */
-  oneLine: "火・水・金・土｜11:00〜売り切れまで",
+  oneLine: "水・金・土｜12:00〜売り切れまで",
   /** サイト内の各所で繰り返し使う案内文 */
   instagramNote: "最新情報はInstagramをご確認ください。",
-  /** 来店前の注意書き */
+  /** オープン時間変更の注意書き（短） */
   cautionNote:
-    "営業日・営業時間は変更となる場合があります。ご来店前にInstagramで最新情報をご確認ください。",
+    "オープン時間は変更となる場合があります。ご来店前にInstagramで最新情報をご確認ください。",
+  /** オープン時間変更の注意書き（長） */
+  cautionNoteLong:
+    "オープン時間は変更になる可能性があります。最新情報は随時Instagramにてお知らせします。",
 } as const;
 
 /** 営業日カレンダー表示用（Access セクションの曜日チップ） */
 export const weekDays = ["月", "火", "水", "木", "金", "土", "日"] as const;
-export const openWeekDays = ["火", "水", "金", "土"] as const;
+export const openWeekDays = ["水", "金", "土"] as const;
 
 export const socialLinks = {
   instagram: "https://www.instagram.com/bakery_panpan",
+  instagramHandle: "@bakery_panpan",
   tabelog: "https://tabelog.com/tokyo/A1322/A132203/13314780/",
 } as const;
 
@@ -61,7 +77,8 @@ export const shopLatLng = "35.7575781,139.6948345";
 export const heroBadges = [
   "Nakaitabashi / Tokyo",
   "Takeout Bagels",
-  "Open Tue, Wed, Fri, Sat",
+  "Open Wed, Fri, Sat",
+  "From 12:00",
   "Until sold out",
 ] as const;
 
@@ -125,7 +142,7 @@ export const menuItems: MenuItem[] = [
 export const menuPriceNote = "価格は店頭にてご確認ください";
 
 export const menuNote =
-  "商品内容は日によって変わる場合があります。最新の焼き上がり情報はInstagramをご確認ください。";
+  "商品内容・価格は店頭にてご確認ください。最新の焼き上がり情報はInstagramでお知らせしています。";
 
 /** Concept セクションの「毎日のシーン」ミニカード */
 export const conceptScenes = [
@@ -152,11 +169,12 @@ export const faqItems: FaqItem[] = [
   {
     question: "営業日はいつですか？",
     answer:
-      "基本の営業日は火曜日・水曜日・金曜日・土曜日です。臨時休業がある場合もあるため、最新情報はInstagramをご確認ください。",
+      "基本の営業日は水曜日・金曜日・土曜日です。営業日や臨時休業は変更となる場合があるため、最新情報はInstagramをご確認ください。",
   },
   {
     question: "何時から営業していますか？",
-    answer: "11:00から営業し、売り切れ次第終了となります。",
+    answer:
+      "基本は12:00から営業し、売り切れ次第終了となります。オープン時間は変更になる可能性があるため、随時Instagramにてお知らせします。",
   },
   {
     question: "予約はできますか？",
@@ -178,11 +196,12 @@ export const faqItems: FaqItem[] = [
   },
   {
     question: "最新情報はどこで確認できますか？",
-    answer: "Instagramにて営業日や焼き上がり情報をお知らせしています。",
+    answer:
+      "Instagramにて営業日、オープン時間、臨時休業、焼き上がり情報をお知らせしています。",
   },
 ];
 
-/** Instagramセクションの仮カード。実際の投稿埋め込みに置き換えるまでのプレースホルダーです。 */
+/** Instagramセクションで伝える発信内容 */
 export const instagramCards = [
   {
     title: "本日の焼き上がり",
@@ -193,7 +212,7 @@ export const instagramCards = [
     caption: "その時期だけの限定フレーバー",
   },
   {
-    title: "営業日のお知らせ",
-    caption: "臨時休業・営業時間の変更はこちらから",
+    title: "営業日・オープン時間",
+    caption: "臨時休業や時間変更のお知らせはこちらから",
   },
 ] as const;

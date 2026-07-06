@@ -15,12 +15,12 @@ export default function GoogleMap({ className = "" }: GoogleMapProps) {
 
   return (
     <div
-      className={`overflow-hidden rounded-3xl border border-wheat bg-milk ${className}`}
+      className={`overflow-hidden rounded-3xl border border-line bg-cream ${className}`}
     >
       <iframe
         src={src}
         title={`${shopInfo.name} の地図（Google Map）`}
-        className="h-full min-h-80 w-full border-0"
+        className="h-full min-h-64 w-full border-0"
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen

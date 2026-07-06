@@ -19,13 +19,14 @@ import {
 
 /**
  * LocalBusiness(Bakery) の構造化データ。
- * 営業終了時刻は「売り切れ次第」のため、確実な情報（開店時刻・営業曜日）のみを記載。
+ * 閉店時刻は「売り切れ次第」で不確かなため記載せず、
+ * 確実な情報（開店時刻・営業曜日）のみを記載する。
  */
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Bakery",
   name: shopInfo.name,
-  description: `${shopInfo.name}は、東京都板橋区・中板橋にある手づくりベーグル専門店です。営業は${businessHours.oneLine}（売り切れ次第終了）。`,
+  description: `${shopInfo.name}は、東京都板橋区・中板橋にある手づくりベーグル専門店です。営業は${businessHours.oneLine}（売り切れ次第終了）。オープン時間は変更となる場合があります。`,
   url: siteUrl,
   address: {
     "@type": "PostalAddress",
@@ -38,8 +39,8 @@ const jsonLd = {
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Tuesday", "Wednesday", "Friday", "Saturday"],
-      opens: "11:00",
+      dayOfWeek: ["Wednesday", "Friday", "Saturday"],
+      opens: "12:00",
     },
   ],
   sameAs: [socialLinks.instagram, socialLinks.tabelog],
@@ -55,7 +56,7 @@ export default function Home() {
       {/* キーボード操作用のスキップリンク（フォーカス時のみ表示） */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-crust focus:px-5 focus:py-2.5 focus:text-cream"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-navy focus:px-5 focus:py-2.5 focus:text-paper"
       >
         本文へスキップ
       </a>

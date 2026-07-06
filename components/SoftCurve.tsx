@@ -6,7 +6,7 @@ type SoftCurveProps = {
 
 /**
  * セクション区切りの柔らかい曲線。
- * bg-milk のセクションの上下に置いて、クリーム背景となめらかにつなぐ。
+ * bg-cream のセクションの上下に置いて、ベース背景となめらかにつなぐ。
  */
 export default function SoftCurve({ flip = false, className = "" }: SoftCurveProps) {
   return (
@@ -14,7 +14,7 @@ export default function SoftCurve({ flip = false, className = "" }: SoftCurvePro
       viewBox="0 0 1440 40"
       preserveAspectRatio="none"
       aria-hidden="true"
-      className={`block h-6 w-full text-milk md:h-10 ${flip ? "rotate-180" : ""} ${className}`}
+      className={`block h-6 w-full text-cream md:h-10 ${flip ? "rotate-180" : ""} ${className}`}
     >
       <path
         fill="currentColor"

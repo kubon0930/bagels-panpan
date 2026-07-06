@@ -2,25 +2,34 @@
 
 /*
  * ブランドカラーとフォントの定義。
- * ここを変更すると bg-cream / text-cocoa などのユーティリティに反映されます。
- *   cream    : ベース背景（クリーム）
- *   soft     : カード背景（温かみのあるオフホワイト）
- *   crust    : メイン（焼き色ブラウン）
- *   cocoa    : テキスト（ダークブラウン）
- *   espresso : フッターなどの深いブラウン
- *   toast    : アクセント（ベーグルの焼き色）
- *   wheat    : サブ（薄いベージュ）
- *   milk     : やわらかい背景色
+ * 実店舗（ネイビーの看板・白文字ロゴ・ベーグルの焼き色）に合わせたパレット。
+ * ここを変更すると bg-navy / text-ink などのユーティリティに反映されます。
+ *   navy            : メインのネイビー（#102050）
+ *   navy-deep       : 深いネイビー（Hero・Footer背景）
+ *   navy-soft       : やわらかいネイビー
+ *   navy-storefront : 店舗外観のネイビー
+ *   paper           : ロゴの白（生成りがかった白文字）
+ *   warm            : ベース背景（温かみのある白）
+ *   cream           : セクション背景（生成り）
+ *   bagel           : ベーグルの焼き色
+ *   toast           : 明るい焼き色（アクセント）
+ *   ink             : 本文テキスト
+ *   muted           : 補足テキスト
+ *   line            : 罫線・ボーダー
  */
 @theme {
-  --color-cream: #fff8ef;
-  --color-soft: #fffcf7;
-  --color-crust: #b9855a;
-  --color-cocoa: #3a2a1f;
-  --color-espresso: #2b1c14;
-  --color-toast: #e8a15a;
-  --color-wheat: #f3e1c8;
-  --color-milk: #fff1dd;
+  --color-navy: #102050;
+  --color-navy-deep: #081a3d;
+  --color-navy-soft: #33446c;
+  --color-navy-storefront: #25385f;
+  --color-paper: #f7f3ec;
+  --color-warm: #fffdf8;
+  --color-cream: #f6f0e7;
+  --color-bagel: #b97945;
+  --color-toast: #d3914a;
+  --color-ink: #1e2430;
+  --color-muted: #7a7d86;
+  --color-line: #e7e0d6;
 
   --font-sans: var(--font-noto-sans-jp), "Hiragino Kaku Gothic ProN",
     "Yu Gothic", sans-serif;
@@ -28,8 +37,8 @@
 
   /* カード用の柔らかい角丸と影 */
   --radius-card: 1.75rem;
-  --shadow-warm: 0 10px 30px -14px rgb(58 42 31 / 0.16);
-  --shadow-warm-lg: 0 18px 44px -16px rgb(58 42 31 / 0.24);
+  --shadow-warm: 0 10px 30px -14px rgb(16 32 80 / 0.14);
+  --shadow-warm-lg: 0 18px 44px -16px rgb(16 32 80 / 0.22);
 
   --animate-float: float 8s ease-in-out infinite;
   --animate-float-slow: float 12s ease-in-out infinite;
@@ -55,24 +64,26 @@ section[id] {
 }
 
 body {
-  background: var(--color-cream);
-  color: var(--color-cocoa);
+  background: var(--color-warm);
+  color: var(--color-ink);
   font-family: var(--font-sans);
 }
 
 /* キーボード操作時のフォーカスリング */
 :focus-visible {
-  outline: 2px solid var(--color-crust);
+  outline: 2px solid var(--color-navy);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
-/* 背景の小さなドット模様（Heroなどの装飾用） */
+/* ネイビー背景内ではフォーカスリングを白系にする */
+.on-navy :focus-visible {
+  outline-color: var(--color-paper);
+}
+
+/* 背景の小さなドット模様（currentColor で色を制御） */
 .dot-pattern {
-  background-image: radial-gradient(
-    var(--color-wheat) 1.5px,
-    transparent 1.6px
-  );
+  background-image: radial-gradient(currentColor 1.5px, transparent 1.6px);
   background-size: 26px 26px;
 }
 

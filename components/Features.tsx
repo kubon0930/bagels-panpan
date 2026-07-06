@@ -45,17 +45,20 @@ const features = [
   {
     icon: <BagelIcon />,
     title: "もちっと食感",
-    description: "ひと口ごとに感じる、しっかりとした満足感。",
+    description:
+      "ひと口ごとに感じる、しっかりとした満足感。毎日食べても飽きない、やさしい美味しさを目指しています。",
   },
   {
     icon: <WheatIcon />,
     title: "毎日に合う味",
-    description: "朝食、ランチ、軽食、手土産まで、日常に寄り添う味わい。",
+    description:
+      "朝食、ランチ、軽食、手土産まで。日常のいろいろな場面に寄り添うベーグルです。",
   },
   {
     icon: <HandIcon />,
     title: "手づくりの温度",
-    description: "ひとつひとつ丁寧に焼き上げる、小さなお店ならではの温かさ。",
+    description:
+      "ひとつひとつ丁寧に焼き上げる、小さなお店ならではの温かさ。売り切れ次第終了となる日もあります。",
   },
 ];
 
@@ -63,7 +66,7 @@ export default function Features() {
   return (
     <section id="features">
       <SoftCurve />
-      <div className="bg-milk">
+      <div className="bg-cream">
         <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
           <SectionHeading
             eyebrow="Features"
@@ -73,14 +76,20 @@ export default function Features() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {features.map((feature, index) => (
               <FadeIn key={feature.title} delay={index * 100} className="h-full">
-                <div className="h-full rounded-card bg-soft p-8 text-center shadow-warm transition-all hover:-translate-y-1 hover:shadow-warm-lg">
-                  <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-full bg-milk text-crust">
+                <div className="h-full rounded-card bg-warm p-8 text-center shadow-warm transition-all hover:-translate-y-1 hover:shadow-warm-lg">
+                  <div className="relative mx-auto mb-5 grid h-20 w-20 place-items-center rounded-full bg-cream text-navy">
                     {feature.icon}
+                    <span
+                      aria-hidden="true"
+                      className="absolute -right-1 -top-1 grid h-7 w-7 place-items-center rounded-full bg-toast font-display text-xs font-bold text-navy-deep"
+                    >
+                      {index + 1}
+                    </span>
                   </div>
-                  <h3 className="text-lg font-bold tracking-wide">
+                  <h3 className="text-lg font-bold tracking-wide text-navy">
                     {feature.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-cocoa/80">
+                  <p className="mt-3 text-sm leading-relaxed text-ink/80">
                     {feature.description}
                   </p>
                 </div>

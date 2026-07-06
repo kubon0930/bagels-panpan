@@ -23,12 +23,12 @@ export default function Menu() {
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {menuItems.map((item, index) => (
             <FadeIn key={item.name} delay={index * 80} className="h-full">
-              <article className="group h-full rounded-card border border-wheat/70 bg-soft p-5 shadow-warm transition-all hover:-translate-y-1 hover:shadow-warm-lg">
+              <article className="group h-full rounded-card border border-line bg-warm p-5 shadow-warm transition-all hover:-translate-y-1 hover:shadow-warm-lg">
                 {/*
                   商品写真エリア。
                   data/site.ts の menuItems に image を設定すると写真表示に切り替わります。
                 */}
-                <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-2xl bg-milk">
+                <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-2xl bg-cream">
                   {item.image ? (
                     <Image
                       src={item.image}
@@ -40,50 +40,50 @@ export default function Menu() {
                   ) : (
                     <BagelGraphic
                       className="h-28 w-28 transition-transform duration-500 group-hover:rotate-6 sm:h-32 sm:w-32"
-                      holeColor="var(--color-milk)"
+                      holeColor="var(--color-cream)"
                       tone={item.tone}
                     />
                   )}
                   {item.tag && (
-                    <span className="absolute right-3 top-3 rounded-full bg-toast px-3 py-1 font-display text-xs font-semibold tracking-wider text-white">
+                    <span className="absolute right-3 top-3 rounded-full bg-toast px-3 py-1 font-display text-xs font-bold tracking-wider text-navy-deep">
                       {item.tag}
                     </span>
                   )}
                 </div>
 
                 <div className="space-y-2 px-1 pb-1 pt-5">
-                  <h3 className="font-display text-lg font-bold tracking-wide">
+                  <h3 className="font-display text-lg font-bold tracking-wide text-navy">
                     {item.name}
                     {item.nameJa && (
-                      <span className="ml-2 align-middle text-xs font-medium text-cocoa/65">
+                      <span className="ml-2 align-middle rounded-full bg-cream px-2.5 py-0.5 text-xs font-medium text-bagel">
                         {item.nameJa}
                       </span>
                     )}
                   </h3>
-                  <p className="text-sm leading-relaxed text-cocoa/80">
+                  <p className="text-sm leading-relaxed text-ink/80">
                     {item.description}
                   </p>
-                  <p className="pt-1 text-xs text-cocoa/70">{menuPriceNote}</p>
+                  <p className="pt-1 text-xs text-ink/65">{menuPriceNote}</p>
                 </div>
               </article>
             </FadeIn>
           ))}
         </div>
 
-        <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-wheat bg-milk/70 px-6 py-5 text-center text-sm leading-relaxed text-cocoa/80">
-          商品内容は日によって変わる場合があります。
+        <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-line bg-cream px-6 py-5 text-center text-sm leading-relaxed text-ink/80">
+          商品内容・価格は店頭にてご確認ください。
           <br />
           最新の焼き上がり情報は
           <a
             href={socialLinks.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="mx-1 font-medium text-crust underline underline-offset-4 transition-colors hover:text-toast"
+            className="mx-1 font-medium text-navy underline underline-offset-4 transition-colors hover:text-bagel"
           >
             Instagram
             <span className="sr-only">（新しいタブで開きます）</span>
           </a>
-          をご確認ください。
+          でお知らせしています。
         </div>
       </div>
     </section>

@@ -29,7 +29,7 @@ export default function MobileCta() {
         href={socialLinks.instagram}
         target="_blank"
         rel="noopener noreferrer"
-        className="rounded-full bg-crust/95 px-7 py-3 text-sm font-medium text-cream shadow-warm-lg backdrop-blur transition-colors hover:bg-cocoa"
+        className="rounded-full bg-navy/95 px-7 py-3 text-sm font-medium text-paper shadow-warm-lg backdrop-blur transition-colors hover:bg-navy-deep"
       >
         Instagramで営業日を見る
         <span className="sr-only">（新しいタブで開きます）</span>

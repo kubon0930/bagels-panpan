@@ -1,45 +1,65 @@
+import Image from "next/image";
 import BagelGraphic from "@/components/BagelGraphic";
-import { businessHours, heroBadges, shopInfo, socialLinks } from "@/data/site";
+import BrandLogo from "@/components/BrandLogo";
+import {
+  brandImages,
+  businessHours,
+  heroBadges,
+  shopInfo,
+  socialLinks,
+} from "@/data/site";
+import { publicImageExists } from "@/lib/images";
 
-/** ベーグルから立ちのぼる湯気の細い線 */
-function Steam() {
+/**
+ * 店舗外観写真がまだない場合の代替ビジュアル。
+ * 実店舗（ネイビーの外観・白いタペストリー・丸ロゴ）をCSSで再現する。
+ */
+function StorefrontPlaceholder() {
   return (
-    <svg
-      viewBox="0 0 64 44"
-      className="h-9 w-14 text-crust/35"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M12 40c-4-6 4-9 0-15s4-9 0-15" opacity="0.7" />
-      <path d="M32 42c-4-6 4-10 0-17s4-10 0-17" />
-      <path d="M52 40c-4-6 4-9 0-15s4-9 0-15" opacity="0.7" />
-    </svg>
+    <div className="relative mx-auto flex w-full max-w-sm flex-col items-center gap-7 rounded-[2rem] border border-paper/15 bg-navy-storefront px-8 py-10 shadow-warm-lg">
+      {/* 看板 */}
+      <p className="w-full rounded-xl bg-navy-deep py-3 text-center font-display text-xl font-bold tracking-wide text-paper">
+        Bagels Panpan.
+      </p>
+      {/* タペストリー風ラベル */}
+      <p className="rounded-lg bg-paper px-6 py-2.5 font-display text-sm font-bold tracking-[0.2em] text-navy">
+        HELLO BAGELS!
+      </p>
+      <BagelGraphic
+        className="h-44 w-44 animate-float-slow"
+        holeColor="var(--color-navy-storefront)"
+      />
+      <BrandLogo size={72} className="shadow-warm" />
+    </div>
   );
 }
 
 export default function Hero() {
+  // public/images/panpan-storefront.jpg を置いて再ビルドすると写真表示に切り替わります
+  const hasStorefront = publicImageExists("images/panpan-storefront.jpg");
+
   return (
-    <section id="top" className="relative overflow-hidden">
+    <section
+      id="top"
+      className="on-navy relative overflow-hidden bg-gradient-to-br from-navy-deep via-navy to-navy-storefront text-paper"
+    >
       {/* 背景の装飾（ドット模様と大きな円） */}
       <div
         aria-hidden="true"
-        className="dot-pattern absolute inset-x-0 top-0 h-[26rem] opacity-40 [mask-image:linear-gradient(to_bottom,black,transparent)]"
+        className="dot-pattern absolute inset-x-0 top-0 h-[26rem] text-paper opacity-[0.06] [mask-image:linear-gradient(to_bottom,black,transparent)]"
       />
       <div
         aria-hidden="true"
-        className="absolute -left-24 top-24 h-64 w-64 rounded-full bg-milk"
+        className="absolute -left-24 top-24 h-64 w-64 rounded-full bg-navy-soft/30"
       />
       <div
         aria-hidden="true"
-        className="absolute -right-16 bottom-8 h-48 w-48 rounded-full bg-wheat/50"
+        className="absolute -right-16 bottom-8 h-48 w-48 rounded-full bg-toast/15"
       />
 
       <div className="relative mx-auto grid w-full max-w-6xl items-center gap-14 px-5 pb-20 pt-28 sm:px-8 md:pb-28 md:pt-44 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-8 text-center lg:text-left">
-          <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-crust sm:text-sm">
+          <p className="font-display text-xs font-semibold uppercase tracking-[0.3em] text-toast sm:text-sm">
             Handmade Bagel Shop
           </p>
 
@@ -49,18 +69,21 @@ export default function Hero() {
             もちっと焼き上げています。
           </h1>
 
-          <p className="leading-loose text-cocoa/80">
+          <p className="leading-loose text-paper/85">
             {shopInfo.name}は、東京都板橋区・中板橋にある
             <br className="hidden sm:block" />
-            手づくりベーグルの小さなお店です。
+            ネイビーの小さなベーグル専門店です。
           </p>
 
           {/* 小さな情報バッジ */}
-          <ul className="flex flex-wrap justify-center gap-2 lg:justify-start" aria-label="お店の基本情報">
+          <ul
+            className="flex flex-wrap justify-center gap-2 lg:justify-start"
+            aria-label="お店の基本情報"
+          >
             {heroBadges.map((badge) => (
               <li
                 key={badge}
-                className="rounded-full border border-wheat bg-soft px-3.5 py-1.5 font-display text-[11px] font-semibold uppercase tracking-wider text-crust"
+                className="rounded-full border border-paper/25 bg-paper/10 px-3.5 py-1.5 font-display text-[11px] font-semibold uppercase tracking-wider text-paper"
               >
                 {badge}
               </li>
@@ -70,7 +93,7 @@ export default function Hero() {
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
             <a
               href="#menu"
-              className="w-full rounded-full bg-crust px-8 py-3.5 text-center font-medium text-cream shadow-warm transition-all hover:-translate-y-0.5 hover:bg-cocoa sm:w-auto"
+              className="w-full rounded-full bg-toast px-8 py-3.5 text-center font-bold text-navy-deep shadow-warm transition-all hover:-translate-y-0.5 hover:bg-paper sm:w-auto"
             >
               メニューを見る
             </a>
@@ -78,7 +101,7 @@ export default function Hero() {
               href={socialLinks.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full rounded-full border border-crust/50 bg-soft/60 px-8 py-3.5 text-center font-medium text-crust transition-all hover:-translate-y-0.5 hover:bg-crust hover:text-cream sm:w-auto"
+              className="w-full rounded-full border border-paper/40 px-8 py-3.5 text-center font-medium text-paper transition-all hover:-translate-y-0.5 hover:bg-paper hover:text-navy sm:w-auto"
             >
               Instagramで営業日を見る
               <span className="sr-only">（新しいタブで開きます）</span>
@@ -86,18 +109,20 @@ export default function Hero() {
           </div>
 
           {/* 営業情報ミニカード */}
-          <div className="inline-block rounded-2xl border border-wheat bg-milk/80 px-6 py-4 text-left text-sm leading-relaxed">
-            <p className="font-medium">{businessHours.oneLine}</p>
-            <p className="text-cocoa/70">
+          <div className="inline-block rounded-2xl border border-paper/20 bg-paper/10 px-6 py-4 text-left text-sm leading-relaxed backdrop-blur-sm">
+            <p className="font-bold">{businessHours.oneLine}</p>
+            <p className="text-paper/80">
               売り切れ次第終了｜{shopInfo.access}
             </p>
-            <p className="text-cocoa/70">
+            <p className="text-paper/80">
+              オープン時間は変更となる場合があります。
+              <br className="hidden sm:block" />
               最新情報は
               <a
                 href={socialLinks.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mx-0.5 font-medium text-crust underline underline-offset-4 transition-colors hover:text-toast"
+                className="mx-0.5 font-medium text-toast underline underline-offset-4 transition-colors hover:text-paper"
               >
                 Instagram
                 <span className="sr-only">（新しいタブで開きます）</span>
@@ -109,37 +134,29 @@ export default function Hero() {
 
         {/*
           メインビジュアル。
-          TODO: ベーグルの写真が用意できたら、下の BagelGraphic を next/image に差し替えてください。
-          例:
-            <Image
-              src="/images/hero.jpg"
-              alt="Bagels Panpan. のベーグル"
-              fill
-              priority
-              className="object-cover"
-            />
-          （public/images/hero.jpg に写真を置き、親の div はそのまま使えます）
+          public/images/panpan-storefront.jpg（店舗外観写真）を置いて再ビルドすると
+          自動で写真表示に切り替わります。それまでは実店舗風のプレースホルダーを表示。
         */}
-        <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
-          <div aria-hidden="true" className="absolute -top-7 left-1/2 -translate-x-1/2">
-            <Steam />
-          </div>
-          <div className="relative aspect-square overflow-hidden rounded-full bg-milk shadow-[0_18px_50px_-20px_rgba(58,42,31,0.25)]">
-            <BagelGraphic
-              className="h-full w-full animate-float-slow p-10"
-              holeColor="var(--color-milk)"
+        {hasStorefront ? (
+          <div className="relative mx-auto w-full max-w-sm">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border-4 border-paper/15 shadow-warm-lg">
+              <Image
+                src={brandImages.storefront}
+                alt="Bagels Panpan. storefront"
+                fill
+                priority
+                sizes="(min-width: 1024px) 420px, 85vw"
+                className="object-cover"
+              />
+            </div>
+            <BrandLogo
+              size={88}
+              className="absolute -bottom-5 -left-5 border-4 border-navy-deep shadow-warm-lg"
             />
           </div>
-          {/* 小さな飾り円 */}
-          <div
-            aria-hidden="true"
-            className="absolute -left-6 top-8 h-16 w-16 animate-float rounded-full bg-toast/70"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute -right-4 bottom-12 h-10 w-10 animate-float rounded-full bg-wheat"
-          />
-        </div>
+        ) : (
+          <StorefrontPlaceholder />
+        )}
       </div>
     </section>
   );
