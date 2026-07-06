@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/*
+ * ブランドカラーとフォントの定義。
+ * ここを変更すると bg-cream / text-cocoa などのユーティリティに反映されます。
+ *   cream    : ベース背景（クリーム）
+ *   soft     : カード背景（温かみのあるオフホワイト）
+ *   crust    : メイン（焼き色ブラウン）
+ *   cocoa    : テキスト（ダークブラウン）
+ *   espresso : フッターなどの深いブラウン
+ *   toast    : アクセント（ベーグルの焼き色）
+ *   wheat    : サブ（薄いベージュ）
+ *   milk     : やわらかい背景色
+ */
+@theme {
+  --color-cream: #fff8ef;
+  --color-soft: #fffcf7;
+  --color-crust: #b9855a;
+  --color-cocoa: #3a2a1f;
+  --color-espresso: #2b1c14;
+  --color-toast: #e8a15a;
+  --color-wheat: #f3e1c8;
+  --color-milk: #fff1dd;
+
+  --font-sans: var(--font-noto-sans-jp), "Hiragino Kaku Gothic ProN",
+    "Yu Gothic", sans-serif;
+  --font-display: var(--font-quicksand), var(--font-noto-sans-jp), sans-serif;
+
+  /* カード用の柔らかい角丸と影 */
+  --radius-card: 1.75rem;
+  --shadow-warm: 0 10px 30px -14px rgb(58 42 31 / 0.16);
+  --shadow-warm-lg: 0 18px 44px -16px rgb(58 42 31 / 0.24);
+
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-float-slow: float 12s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-14px) rotate(2deg);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 固定ヘッダーの高さぶん、アンカー遷移位置を下げる */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-cocoa);
+  font-family: var(--font-sans);
+}
+
+/* キーボード操作時のフォーカスリング */
+:focus-visible {
+  outline: 2px solid var(--color-crust);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* 背景の小さなドット模様（Heroなどの装飾用） */
+.dot-pattern {
+  background-image: radial-gradient(
+    var(--color-wheat) 1.5px,
+    transparent 1.6px
+  );
+  background-size: 26px 26px;
+}
+
+/* セクションのフェードイン（FadeIn コンポーネントが付与） */
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out;
+}
+
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .fade-in-section {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .animate-float,
+  .animate-float-slow {
+    animation: none;
+  }
+}
