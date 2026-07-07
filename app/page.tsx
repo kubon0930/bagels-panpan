@@ -1,4 +1,5 @@
 import Access from "@/components/Access";
+import BeforeVisit from "@/components/BeforeVisit";
 import Concept from "@/components/Concept";
 import FadeIn from "@/components/FadeIn";
 import FAQ from "@/components/FAQ";
@@ -8,7 +9,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import HowToVisit from "@/components/HowToVisit";
 import InstagramSection from "@/components/InstagramSection";
-import Menu from "@/components/Menu";
+import Lineup from "@/components/Lineup";
 import MobileCta from "@/components/MobileCta";
 import {
   businessHours,
@@ -63,11 +64,12 @@ export default function Home() {
       <Header />
       <main id="main">
         <Hero />
+        <BeforeVisit />
         <FadeIn>
           <Concept />
         </FadeIn>
         <FadeIn>
-          <Menu />
+          <Lineup />
         </FadeIn>
         <FadeIn>
           <Features />

@@ -19,7 +19,7 @@ export default function MobileCta() {
 
   return (
     <div
-      className={`fixed inset-x-0 bottom-4 z-40 flex justify-center px-5 transition-all duration-300 md:hidden ${
+      className={`fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex justify-center px-5 transition-all duration-300 md:hidden ${
         show
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"

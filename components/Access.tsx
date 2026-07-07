@@ -14,6 +14,7 @@ import {
 } from "@/data/site";
 import { publicImageExists } from "@/lib/images";
 
+/** 優先度順：住所・アクセス → 営業情報 → 補足（予約・サービス・支払い） */
 const accessRows: { label: string; value: React.ReactNode }[] = [
   { label: "店名", value: shopInfo.name },
   { label: "住所", value: shopInfo.address },
@@ -24,8 +25,8 @@ const accessRows: { label: string; value: React.ReactNode }[] = [
     label: "定休日",
     value: `${businessHours.closedDaysShort}（臨時休業あり）`,
   },
-  { label: "サービス", value: shopInfo.services },
   { label: "予約", value: "不可" },
+  { label: "サービス", value: shopInfo.services },
   { label: "支払い", value: shopInfo.payment },
   {
     label: "最新情報",
@@ -87,7 +88,17 @@ function BusinessHoursCard() {
       <p className="mt-4 text-sm leading-relaxed text-ink/75">
         オープン時間は変更となる場合があります。
         <br className="hidden sm:block" />
-        営業日・臨時休業・焼き上がり情報は、随時Instagramにてお知らせします。
+        営業日・臨時休業・焼き上がり情報は、随時
+        <a
+          href={socialLinks.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-0.5 font-bold text-navy underline underline-offset-4 transition-colors hover:text-bagel"
+        >
+          Instagram
+          <span className="sr-only">（新しいタブで開きます）</span>
+        </a>
+        にてお知らせします。
       </p>
     </div>
   );
@@ -117,7 +128,7 @@ function StorefrontPhoto() {
       <div className="relative aspect-[4/3]">
         <Image
           src={brandImages.storefront}
-          alt="Bagels Panpan. storefront"
+          alt="Bagels Panpan. ネイビーの店舗外観"
           fill
           sizes="(min-width: 1024px) 520px, 90vw"
           className="object-cover"

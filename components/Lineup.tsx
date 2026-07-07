@@ -2,20 +2,24 @@ import Image from "next/image";
 import BagelGraphic from "@/components/BagelGraphic";
 import FadeIn from "@/components/FadeIn";
 import SectionHeading from "@/components/SectionHeading";
-import { menuItems, menuPriceNote, socialLinks } from "@/data/site";
+import { menuItems, socialLinks } from "@/data/site";
 
-export default function Menu() {
+/**
+ * その日並ぶベーグルの紹介セクション。
+ * 固定メニューではなくラインナップ例として見せる（内容は日によって変わる）。
+ */
+export default function Lineup() {
   return (
-    <section id="menu">
+    <section id="lineup">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
         <SectionHeading
-          eyebrow="Menu"
-          title={<span className="font-display">Menu</span>}
+          eyebrow="Lineup"
+          title="その日並ぶベーグル"
           description={
             <>
-              定番から季節の味まで、
+              その日並ぶベーグルは、焼き上がりや季節によって変わります。
               <br className="hidden sm:block" />
-              その日焼き上がるベーグルをお楽しみください。
+              最新のラインナップはInstagramでお知らせしています。
             </>
           }
         />
@@ -63,7 +67,6 @@ export default function Menu() {
                   <p className="text-sm leading-relaxed text-ink/80">
                     {item.description}
                   </p>
-                  <p className="pt-1 text-xs text-ink/65">{menuPriceNote}</p>
                 </div>
               </article>
             </FadeIn>
@@ -71,9 +74,9 @@ export default function Menu() {
         </div>
 
         <div className="mx-auto mt-10 max-w-2xl rounded-2xl border border-line bg-cream px-6 py-5 text-center text-sm leading-relaxed text-ink/80">
-          商品内容・価格は店頭にてご確認ください。
+          掲載している商品はラインナップ例です。
           <br />
-          最新の焼き上がり情報は
+          商品内容・価格は店頭または
           <a
             href={socialLinks.instagram}
             target="_blank"
@@ -83,7 +86,7 @@ export default function Menu() {
             Instagram
             <span className="sr-only">（新しいタブで開きます）</span>
           </a>
-          でお知らせしています。
+          にてご確認ください。
         </div>
       </div>
     </section>

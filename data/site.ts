@@ -138,12 +138,6 @@ export const menuItems: MenuItem[] = [
   },
 ];
 
-// TODO: 価格が確定したら各商品に価格を追加し、この文言を差し替えてください。
-export const menuPriceNote = "価格は店頭にてご確認ください";
-
-export const menuNote =
-  "商品内容・価格は店頭にてご確認ください。最新の焼き上がり情報はInstagramでお知らせしています。";
-
 /** Concept セクションの「毎日のシーン」ミニカード */
 export const conceptScenes = [
   {

@@ -6,7 +6,7 @@ import { shopInfo, socialLinks } from "@/data/site";
 
 const navItems = [
   { label: "Concept", href: "#concept" },
-  { label: "Menu", href: "#menu" },
+  { label: "Lineup", href: "#lineup" },
   { label: "Access", href: "#access" },
   { label: "Instagram", href: "#instagram" },
 ];

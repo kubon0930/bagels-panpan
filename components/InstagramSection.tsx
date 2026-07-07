@@ -37,10 +37,10 @@ export default function InstagramSection() {
           </p>
 
           <p className="mt-4 font-display text-sm font-semibold uppercase tracking-[0.25em] text-toast">
-            Instagram / News
-          </p>
-          <h2 className="mt-2 font-display text-2xl font-bold tracking-wide sm:text-3xl">
             Latest from Instagram
+          </p>
+          <h2 className="mt-2 text-2xl font-bold tracking-wide sm:text-3xl">
+            最新情報はInstagramへ
           </h2>
           <p className="mx-auto mt-4 max-w-md leading-loose text-paper/85">
             営業日、オープン時間、臨時休業、焼き上がり情報は

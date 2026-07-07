@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP, Quicksand } from "next/font/google";
 import { brandImages, siteUrl } from "@/data/site";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#102050",
+  // スマホ下部固定CTAの env(safe-area-inset-bottom) を有効にする
+  viewportFit: "cover",
+};
 
 const notoSansJp = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",

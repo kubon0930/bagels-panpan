@@ -92,10 +92,10 @@ export default function Hero() {
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center lg:justify-start">
             <a
-              href="#menu"
+              href="#lineup"
               className="w-full rounded-full bg-toast px-8 py-3.5 text-center font-bold text-navy-deep shadow-warm transition-all hover:-translate-y-0.5 hover:bg-paper sm:w-auto"
             >
-              メニューを見る
+              ラインナップを見る
             </a>
             <a
               href={socialLinks.instagram}
@@ -142,7 +142,7 @@ export default function Hero() {
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border-4 border-paper/15 shadow-warm-lg">
               <Image
                 src={brandImages.storefront}
-                alt="Bagels Panpan. storefront"
+                alt="Bagels Panpan. ネイビーの店舗外観"
                 fill
                 priority
                 sizes="(min-width: 1024px) 420px, 85vw"
