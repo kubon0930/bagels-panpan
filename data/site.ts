@@ -66,6 +66,23 @@ export const socialLinks = {
   tabelog: "https://tabelog.com/tokyo/A1322/A132203/13314780/",
 } as const;
 
+/** 予約販売ページへのパス（サイト内導線で使用） */
+export const reservePath = "/reserve";
+
+/** 予約販売の共通注意文（予約ページ・確認ページで表示） */
+export const reserveNotes = [
+  "販売数には限りがあります。",
+  "商品内容・数量は日によって変わります。",
+  "オープン時間や受け取り時間は変更となる場合があります。",
+  "最新情報はInstagramをご確認ください。",
+] as const;
+
+/** キャンセルポリシー（TODO: 本番公開前に店舗側で内容をご確認ください） */
+export const cancelPolicy = [
+  "ご予約後のキャンセル・変更については、できるだけ早めにInstagramまたは店頭までご連絡ください。",
+  "事前決済の場合、返金対応の可否や期限については店舗の案内をご確認ください。",
+] as const;
+
 /** Google Map の店舗ページ（「Google Mapで見る」リンク先） */
 export const googleMapsUrl =
   "https://www.google.com/maps/place/Bagels+Panpan./@35.7575781,139.6948345,17z/data=!3m1!4b1!4m6!3m5!1s0x6018930022117fbf:0xf2b2c5e17d6cbc34!8m2!3d35.7575781!4d139.6948345!16s%2Fg%2F11x_5s9hc1";

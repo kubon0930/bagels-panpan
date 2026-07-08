@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import { shopInfo, socialLinks } from "@/data/site";
+import { reservePath, shopInfo, socialLinks } from "@/data/site";
 
 const navItems = [
   { label: "Concept", href: "#concept" },
@@ -36,6 +37,12 @@ export default function Header() {
               {item.label}
             </a>
           ))}
+          <Link
+            href={reservePath}
+            className="rounded-full bg-toast px-5 py-2 text-sm font-bold text-navy-deep transition-all hover:-translate-y-0.5 hover:bg-navy hover:text-paper"
+          >
+            予約する
+          </Link>
           <a
             href={socialLinks.instagram}
             target="_blank"
@@ -97,12 +104,19 @@ export default function Header() {
                 </li>
               ))}
             </ul>
+            <Link
+              href={reservePath}
+              onClick={() => setMenuOpen(false)}
+              className="mt-5 block rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
+            >
+              予約する
+            </Link>
             <a
               href={socialLinks.instagram}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}
-              className="mt-5 block rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
+              className="mt-3 block rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
             >
               Instagramを見る
               <span className="sr-only">（新しいタブで開きます）</span>

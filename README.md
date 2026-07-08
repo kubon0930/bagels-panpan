@@ -94,8 +94,116 @@ GitHub リポジトリ（kubon0930/bagels-panpan）と Vercel が連携済みで
 
 ```
 app/            レイアウト・トップページ・グローバルCSS・favicon
-components/     セクションごとのコンポーネント（Header, Hero, Menu など）
+  reserve/      予約ページ（/reserve, confirm, complete, cancel）
+  admin/        管理画面（login, ダッシュボード, sales-days, items, orders）
+  legal/        特商法・プライバシー・キャンセルポリシー
+  api/          reserve（注文作成）, stripe/webhook
+components/     セクションごとのコンポーネント
+  reserve/      予約ページ用UI
+  admin/        管理画面用UI（AdminShell 認証ガードなど）
 data/site.ts    店舗情報・営業情報・メニュー・FAQ・SNSリンク（編集はここ）
-lib/images.ts   画像の存在チェック（写真差し替えの自動切り替え用）
+lib/            supabase/ stripe / reservation 型 / CSV / メール など
+supabase/       DBマイグレーション(0001) とサンプルデータ(seed)
 public/images/  写真置き場（差し替え用）
 ```
+
+---
+
+# 予約販売システム
+
+開店前の行列を減らし、暑い日でもお客様が安心して受け取りに来られるよう、
+販売日ごとに数量限定でベーグルを事前予約できる仕組みです。
+**環境変数を設定しなくても公式サイトはそのまま動きます**（予約ページは「準備中」表示）。
+Supabase を設定すると予約が有効になり、Stripe を追加するとオンライン決済まで完結します。
+
+## 決済の2モード（段階導入）
+
+`NEXT_PUBLIC_PAYMENT_MODE` で切り替えます。
+
+- `reservation_only`（既定）… 予約のみ・**店頭支払い**。Stripe不要。注文は即「予約確定」。
+- `stripe` … Stripe Checkout で**事前決済**。決済完了で確定。未完了・期限切れ（30分）は在庫を自動で戻します。
+
+## 環境変数一覧（`.env.example` 参照）
+
+| 変数 | 必須 | 用途 |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | 推奨 | 決済の戻り先などに使うサイトURL |
+| `NEXT_PUBLIC_SUPABASE_URL` | 予約に必須 | Supabase プロジェクトURL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | 予約に必須 | Supabase anon キー |
+| `SUPABASE_SERVICE_ROLE_KEY` | 予約に必須 | サーバー専用。**公開厳禁** |
+| `NEXT_PUBLIC_PAYMENT_MODE` | 予約に必須 | `reservation_only` or `stripe` |
+| `STRIPE_SECRET_KEY` | 決済時のみ | Stripe シークレットキー |
+| `STRIPE_WEBHOOK_SECRET` | 決済時のみ | Webhook署名シークレット |
+| `RESEND_API_KEY` / `RESEND_FROM_EMAIL` | 任意 | 予約完了メール（未設定なら送信なし） |
+| `SHOP_NOTIFICATION_EMAIL` | 任意 | 店舗への新規予約通知先 |
+
+Vercel では Project Settings → Environment Variables に登録し、再デプロイしてください。
+
+## 1. Supabase 設定
+
+1. [supabase.com](https://supabase.com) でプロジェクトを作成。
+2. **SQL Editor** で `supabase/migrations/0001_reservation_system.sql` の内容を貼り付けて実行
+   （テーブル・RLS・在庫確認付きの注文作成関数 `create_order` などを作成）。
+3. 動作確認用に `supabase/seed.sql` も実行すると、次の水曜日の販売日・商品4種（各10個）・
+   受け取り時間帯3枠が入ります。
+4. Project Settings → API から URL・anon キー・service_role キーを取得し環境変数に設定。
+
+## 2. 管理者ログイン設定
+
+1. Supabase の **Authentication → Users** で「Add user」から管理者のメール＋パスワードを作成。
+2. **SQL Editor** で管理者メールを登録（このメールのユーザーだけ管理画面に入れます）:
+   ```sql
+   insert into public.app_admins (email) values ('店舗の管理者@example.com');
+   ```
+3. `/admin/login` からログイン。未ログインや非管理者は管理画面に入れません（RLSでデータも保護）。
+
+## 3. Stripe 設定（オンライン決済を使う場合）
+
+1. [dashboard.stripe.com](https://dashboard.stripe.com) で APIキー（シークレット）を取得し `STRIPE_SECRET_KEY` に設定。
+2. `NEXT_PUBLIC_PAYMENT_MODE=stripe` にする。
+3. **Webhook 設定**：Developers → Webhooks で
+   エンドポイント `https://（サイトURL）/api/stripe/webhook` を追加し、
+   イベント `checkout.session.completed` / `checkout.session.expired` /
+   `payment_intent.payment_failed` を選択。表示された署名シークレットを
+   `STRIPE_WEBHOOK_SECRET` に設定。
+4. 特商法・プライバシー・キャンセルポリシー（`/legal/*`）の内容を必ず確認・修正してください。
+
+## 4. 店舗側の使い方（管理画面）
+
+- **販売日の登録**：`/admin/sales-days` →「＋新しい販売日」で日付・受け取り時間を作成（最初は下書き）。
+  受け取り時間帯（例 12:00〜12:30、上限10）を追加し、受付開始／終了日時を設定。
+- **商品の登録**：`/admin/items` で販売日を選び、商品名・価格・販売数・季節限定/おすすめ・
+  アレルギーメモを登録。公開/非公開を切り替え。
+- **公開**：販売日カードの「公開」「受付中」を ON にするとお客様の `/reserve` に表示されます。
+- **注文確認**：`/admin/orders` で販売日・ステータス・支払い・名前/商品で絞り込み。
+  注文をタップすると詳細でステータス変更・キャンセル（在庫が戻る）・管理メモ入力が可能。
+- **CSV出力**：予約一覧の「CSVで出力」で、店頭の取り置き準備・電話確認用の一覧を出力（Excel対応・BOM付き）。
+
+## 予約番号
+
+注文時に `BP-YYYYMM-0001` 形式で自動発行され、予約完了画面・メール・管理画面・CSVに表示されます。
+
+## 在庫と同時予約
+
+在庫確認と注文作成は DB関数 `create_order` 内で**行ロックを使った1トランザクション**として実行します。
+複数人が同時に予約しても販売数を超えることはありません。売り切れた商品は選択できません。
+
+## 本番公開前チェックリスト
+
+- [ ] Supabase 本番プロジェクトを設定し、`0001_reservation_system.sql` を実行した
+- [ ] RLS が有効になっている（マイグレーションで自動設定）
+- [ ] `app_admins` に管理者メールを登録し、管理者以外が管理画面に入れないことを確認した
+- [ ] （決済時）Stripe 本番キーを設定した
+- [ ] （決済時）Stripe Webhook の署名検証が動作している
+- [ ] （決済時）テスト決済が成功する
+- [ ] （決済時）決済キャンセル／期限切れで在庫が戻る
+- [ ] 売り切れ商品が予約できないことを確認した
+- [ ] 複数人同時予約でも在庫超過しないことを確認した
+- [ ] 予約完了画面に予約番号が表示される
+- [ ] 管理画面に注文が表示される
+- [ ] CSV が出力できる
+- [ ] 特商法表記（`/legal/tokushoho`）を店舗情報で確認・修正した
+- [ ] プライバシーポリシー（`/legal/privacy`）を確認・修正した
+- [ ] キャンセルポリシー（`/legal/cancel-policy`）を確認・修正した
+- [ ] スマホで予約できることを確認した
+- [ ] `npm run build` が通る

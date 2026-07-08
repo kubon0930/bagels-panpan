@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 import BagelGraphic from "@/components/BagelGraphic";
 import BrandLogo from "@/components/BrandLogo";
 import {
   brandImages,
   businessHours,
   heroBadges,
+  reservePath,
   shopInfo,
   socialLinks,
 } from "@/data/site";
@@ -130,6 +132,22 @@ export default function Hero() {
               にてお知らせしています。
             </p>
           </div>
+
+          {/* 予約販売への導線 */}
+          <Link
+            href={reservePath}
+            className="block rounded-2xl bg-paper px-6 py-4 text-left shadow-warm transition-all hover:-translate-y-0.5"
+          >
+            <span className="flex items-center justify-between gap-3">
+              <span className="font-bold text-navy">予約販売を見る</span>
+              <span aria-hidden="true" className="text-navy">
+                →
+              </span>
+            </span>
+            <span className="mt-1 block text-xs leading-relaxed text-ink/70">
+              暑い日や混雑時も、事前予約でスムーズにお受け取りいただけます。
+            </span>
+          </Link>
         </div>
 
         {/*

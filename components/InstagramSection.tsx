@@ -1,5 +1,6 @@
+import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import { instagramCards, socialLinks } from "@/data/site";
+import { instagramCards, reservePath, socialLinks } from "@/data/site";
 
 function InstagramIcon({ className = "" }: { className?: string }) {
   return (
@@ -81,6 +82,17 @@ export default function InstagramSection() {
             Instagramで最新情報を見る
             <span className="sr-only">（新しいタブで開きます）</span>
           </a>
+
+          <p className="mt-5 text-sm text-paper/80">
+            事前予約は
+            <Link
+              href={reservePath}
+              className="mx-1 font-bold text-toast underline underline-offset-4 hover:text-paper"
+            >
+              予約販売ページ
+            </Link>
+            から
+          </p>
         </div>
       </div>
     </section>

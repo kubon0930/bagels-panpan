@@ -1,5 +1,6 @@
+import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import { businessHours, shopInfo, socialLinks } from "@/data/site";
+import { businessHours, reservePath, shopInfo, socialLinks } from "@/data/site";
 
 export default function Footer() {
   return (
@@ -29,6 +30,12 @@ export default function Footer() {
           </div>
 
           <nav aria-label="外部リンク" className="flex flex-col gap-3 text-sm">
+            <Link
+              href={reservePath}
+              className="font-medium text-toast underline-offset-4 transition-colors hover:underline"
+            >
+              予約販売を見る
+            </Link>
             <a
               href={socialLinks.instagram}
               target="_blank"

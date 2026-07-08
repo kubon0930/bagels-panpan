@@ -1,7 +1,8 @@
 import { Fragment } from "react";
+import Link from "next/link";
 import FadeIn from "@/components/FadeIn";
 import SectionHeading from "@/components/SectionHeading";
-import { shopInfo, socialLinks } from "@/data/site";
+import { reservePath, shopInfo, socialLinks } from "@/data/site";
 
 const steps = [
   {
@@ -77,12 +78,18 @@ export default function HowToVisit() {
           ))}
         </div>
 
-        <div className="mt-12 text-center">
+        <div className="mt-12 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <Link
+            href={reservePath}
+            className="inline-block rounded-full bg-toast px-10 py-3.5 font-bold text-navy-deep shadow-warm transition-all hover:-translate-y-0.5 hover:bg-navy hover:text-paper"
+          >
+            予約販売を見る
+          </Link>
           <a
             href={socialLinks.instagram}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block rounded-full bg-navy px-10 py-3.5 font-medium text-paper shadow-warm transition-all hover:-translate-y-0.5 hover:bg-navy-deep"
+            className="inline-block rounded-full border border-navy/30 px-10 py-3.5 font-medium text-navy transition-all hover:-translate-y-0.5 hover:bg-navy hover:text-paper"
           >
             Instagramを見る
             <span className="sr-only">（新しいタブで開きます）</span>
