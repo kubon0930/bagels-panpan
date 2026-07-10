@@ -54,10 +54,14 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* キーボード操作用のスキップリンク（フォーカス時のみ表示） */}
+      {/*
+        キーボード操作用のスキップリンク。
+        focus ではなく focus-visible を使う（ページ遷移時に Next.js が当てる
+        プログラム的なフォーカスでは表示させず、Tab 操作のときだけ表示するため）。
+      */}
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-navy focus:px-5 focus:py-2.5 focus:text-paper"
+        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[60] focus-visible:rounded-full focus-visible:bg-navy focus-visible:px-5 focus-visible:py-2.5 focus-visible:text-paper"
       >
         本文へスキップ
       </a>
