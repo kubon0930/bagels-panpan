@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import { reservePath, shopInfo, socialLinks } from "@/data/site";
@@ -15,8 +15,28 @@ const navItems = [
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // メニュー表示中は背景スクロールを止め、下部追従CTAを非表示にする
+  // （MobileCta 側が body[data-menu-open] を見て隠れる）
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.setAttribute("data-menu-open", "");
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.removeAttribute("data-menu-open");
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.removeAttribute("data-menu-open");
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-warm/90 backdrop-blur">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b border-line ${
+        menuOpen ? "bg-warm" : "bg-warm/90 backdrop-blur"
+      }`}
+    >
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8 md:h-20">
         <a
           href="#top"
@@ -90,7 +110,8 @@ export default function Header() {
             menuOpen ? "visible" : "invisible"
           }`}
         >
-          <div className="border-t border-line px-5 pb-6 pt-2">
+          {/* 開いている間は画面下まで背景を確保し、Heroが透けて見えないようにする */}
+          <div className="flex min-h-[calc(100dvh-4rem)] flex-col border-t border-line px-5 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-2">
             <ul className="flex flex-col">
               {navItems.map((item) => (
                 <li key={item.href}>
@@ -107,16 +128,16 @@ export default function Header() {
             <Link
               href={reservePath}
               onClick={() => setMenuOpen(false)}
-              className="mt-5 block rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
+              className="mt-6 block whitespace-nowrap rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
             >
-              予約する
+              予約販売を見る
             </Link>
             <a
               href={socialLinks.instagram}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}
-              className="mt-3 block rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
+              className="mt-3 block whitespace-nowrap rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
             >
               Instagramを見る
               <span className="sr-only">（新しいタブで開きます）</span>

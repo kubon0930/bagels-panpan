@@ -67,7 +67,7 @@ export default function Features() {
     <section id="features">
       <SoftCurve />
       <div className="bg-cream">
-        <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+        <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-16 sm:px-8 md:py-24">
           <SectionHeading
             eyebrow="Features"
             title={`${shopInfo.name}のこだわり`}

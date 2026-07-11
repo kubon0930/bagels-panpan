@@ -7,7 +7,8 @@ export default function FAQ() {
     <section id="faq">
       <SoftCurve />
       <div className="bg-cream">
-        <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+        {/* スマホはFAQの回答が下部追従CTAに隠れないよう余白を多めに取る */}
+        <div className="mx-auto w-full max-w-6xl px-5 pb-28 pt-16 sm:px-8 md:py-24">
           <SectionHeading
             eyebrow="FAQ"
             title={<span className="font-display">FAQ</span>}

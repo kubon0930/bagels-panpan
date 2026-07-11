@@ -28,7 +28,8 @@ export default async function Lineup() {
 
   return (
     <section id="lineup">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+      {/* スマホは下部追従CTAが商品カードに被らないよう余白を多めに取る */}
+      <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-16 sm:px-8 md:py-24">
         <SectionHeading
           eyebrow="Lineup"
           title="その日並ぶベーグル"

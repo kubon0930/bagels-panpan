@@ -29,7 +29,7 @@ function InstagramIcon({ className = "" }: { className?: string }) {
 export default function InstagramSection() {
   return (
     <section id="instagram">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-16 sm:px-8 md:py-24">
         <div className="on-navy mx-auto max-w-3xl overflow-hidden rounded-card bg-gradient-to-br from-navy-deep to-navy px-6 py-12 text-center text-paper shadow-warm-lg sm:px-12 sm:py-14">
           <BrandLogo size={80} className="mx-auto border-2 border-paper/25 shadow-warm" />
 
