@@ -137,7 +137,7 @@ export default function ConfirmPage() {
   return (
     <div className="min-h-screen bg-warm text-ink">
       <ReserveHeader />
-      <main className="mx-auto w-full max-w-2xl px-5 pb-24 pt-10 sm:px-8">
+      <main className="mx-auto w-full max-w-2xl px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-10 sm:px-8 sm:pb-24">
         <h1 className="text-2xl font-bold tracking-wide text-navy">予約内容の確認</h1>
 
         {cart && (
@@ -196,7 +196,7 @@ export default function ConfirmPage() {
                       onChange={() => setSlotId(s.id)}
                       className="accent-navy"
                     />
-                    <span className="font-medium">{s.label}</span>
+                    <span className="whitespace-nowrap font-medium">{s.label}</span>
                     {s.full && <span className="ml-auto text-xs">満枠</span>}
                   </label>
                 ))}

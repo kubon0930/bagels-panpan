@@ -12,7 +12,7 @@ export default function ReserveHeader() {
           className="flex items-center gap-2.5 font-display text-lg font-bold tracking-wide text-navy transition-colors hover:text-navy-soft"
         >
           <BrandLogo size={34} />
-          {shopInfo.name}
+          <span className="whitespace-nowrap">{shopInfo.name}</span>
         </Link>
         <a
           href={socialLinks.instagram}

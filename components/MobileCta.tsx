@@ -1,39 +1,32 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { socialLinks } from "@/data/site";
+import Link from "next/link";
+import BagelGraphic from "@/components/BagelGraphic";
+import { reservePath } from "@/data/site";
 
 /**
- * スマホ下部の Instagram 固定CTA。
- * Hero を通り過ぎたあたりからふわっと表示され、md 以上では表示しない。
+ * スマホ下部の予約販売への固定CTA（トップページ専用）。
+ * ファーストビューから常時表示し、md 以上では表示しない。
+ * bottom は safe-area（ホームインジケータ等）を考慮して確保する。
  */
 export default function MobileCta() {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 600);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <div
-      className={`fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 flex justify-center px-5 transition-all duration-300 md:hidden ${
-        show
-          ? "translate-y-0 opacity-100"
-          : "pointer-events-none translate-y-4 opacity-0"
-      }`}
-    >
-      <a
-        href={socialLinks.instagram}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="rounded-full bg-navy/95 px-7 py-3 text-sm font-medium text-paper shadow-warm-lg backdrop-blur transition-colors hover:bg-navy-deep"
+    <div className="pointer-events-none fixed inset-x-0 bottom-[calc(0.875rem+env(safe-area-inset-bottom))] z-40 flex justify-center px-5 md:hidden">
+      <Link
+        href={reservePath}
+        className="pointer-events-auto flex w-full max-w-sm items-center justify-between gap-3 rounded-full border border-paper/15 bg-navy-deep/95 py-2 pl-2.5 pr-5 shadow-warm-lg backdrop-blur transition-colors hover:bg-navy"
       >
-        Instagramで営業日を見る
-        <span className="sr-only">（新しいタブで開きます）</span>
-      </a>
+        <span
+          aria-hidden="true"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-paper/10"
+        >
+          <BagelGraphic className="h-6 w-6" holeColor="var(--color-navy-deep)" />
+        </span>
+        <span className="whitespace-nowrap font-bold tracking-wide text-paper">
+          予約販売を見る
+        </span>
+        <span aria-hidden="true" className="shrink-0 text-toast">
+          →
+        </span>
+      </Link>
     </div>
   );
 }

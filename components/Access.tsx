@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import GoogleMap from "@/components/GoogleMap";
 import SectionHeading from "@/components/SectionHeading";
@@ -8,6 +9,7 @@ import {
   businessHours,
   googleMapsUrl,
   openWeekDays,
+  reservePath,
   shopInfo,
   socialLinks,
   weekDays,
@@ -25,7 +27,18 @@ const accessRows: { label: string; value: React.ReactNode }[] = [
     label: "定休日",
     value: `${businessHours.closedDaysShort}（臨時休業あり）`,
   },
-  { label: "予約", value: "不可" },
+  { label: "取り置き", value: "通常の取り置きは行っていません" },
+  {
+    label: "予約販売",
+    value: (
+      <Link
+        href={reservePath}
+        className="font-medium text-navy underline underline-offset-4 transition-colors hover:text-bagel"
+      >
+        受付中の販売日は予約ページにて
+      </Link>
+    ),
+  },
   { label: "サービス", value: shopInfo.services },
   { label: "支払い", value: shopInfo.payment },
   {
@@ -183,7 +196,7 @@ export default function Access() {
                   <path d="M12 21s7-5.1 7-11a7 7 0 1 0-14 0c0 5.9 7 11 7 11Z" />
                   <circle cx="12" cy="10" r="2.5" />
                 </svg>
-                Google Mapで見る
+                <span className="whitespace-nowrap">Google Mapで見る</span>
                 <span className="sr-only">（新しいタブで開きます）</span>
               </a>
             </div>

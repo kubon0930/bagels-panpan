@@ -18,7 +18,7 @@ export const shopInfo = {
   /** Hero などで使う小さな英字ラベル */
   areaLabel: "Nakaitabashi / Tokyo",
   services: "テイクアウト",
-  reservation: "予約不可",
+  reservation: "通常の取り置きは不可（予約販売は受付中の販売日のみ）",
   payment: "QRコード決済可（カード・電子マネー不可）",
   brandCopy: "もちっと、今日を満たすベーグル。",
   /** 店頭の目印（Access で使用） */
@@ -189,7 +189,8 @@ export const faqItems: FaqItem[] = [
   },
   {
     question: "予約はできますか？",
-    answer: "現在、予約は不可です。",
+    answer:
+      "店頭での通常の取り置きは行っていません。予約販売を受付中の販売日に限り、予約販売ページから事前予約いただけます。",
   },
   {
     question: "テイクアウトできますか？",
