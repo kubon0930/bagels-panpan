@@ -22,7 +22,7 @@ export default async function ReservePage() {
     <div className="min-h-screen bg-warm text-ink">
       <ReserveHeader />
 
-      <main className="mx-auto w-full max-w-4xl px-5 pb-24 pt-10 sm:px-8">
+      <main className="mx-auto w-full max-w-4xl px-5 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-10 sm:px-8 sm:pb-24">
         {/* 冒頭の説明 */}
         <div className="text-center">
           <p className="font-display text-sm font-semibold uppercase tracking-[0.25em] text-bagel">
@@ -31,7 +31,7 @@ export default async function ReservePage() {
           <h1 className="mt-2 text-2xl font-bold tracking-wide text-navy sm:text-3xl">
             予約販売
           </h1>
-          <p className="mx-auto mt-5 max-w-xl leading-loose text-ink/80">
+          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-ink/80 sm:mt-5 sm:text-base sm:leading-loose">
             開店前の混雑を少しでも減らし、暑い日でも安心してお受け取りいただけるよう、
             販売日の一部商品を事前予約でご用意しています。
           </p>

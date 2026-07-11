@@ -23,7 +23,7 @@ export default function Header() {
           className="flex items-center gap-2.5 font-display text-lg font-bold tracking-wide text-navy transition-colors hover:text-navy-soft md:text-xl"
         >
           <BrandLogo size={36} />
-          {shopInfo.name}
+          <span className="whitespace-nowrap">{shopInfo.name}</span>
         </a>
 
         {/* PCナビゲーション */}

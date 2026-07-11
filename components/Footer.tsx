@@ -5,8 +5,8 @@ import { businessHours, reservePath, shopInfo, socialLinks } from "@/data/site";
 export default function Footer() {
   return (
     <footer className="on-navy bg-navy-deep text-paper">
-      {/* モバイルは下部固定CTAと重ならないよう余白を多めに取る */}
-      <div className="mx-auto w-full max-w-6xl px-5 pb-28 pt-14 sm:px-8 md:pb-16 md:pt-16">
+      {/* モバイルは下部固定CTA＋safe-areaと重ならないよう余白を多めに取る */}
+      <div className="mx-auto w-full max-w-6xl px-5 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-14 sm:px-8 md:pb-16 md:pt-16">
         <div className="flex flex-col items-center gap-10 text-center md:flex-row md:items-start md:justify-between md:text-left">
           <div className="space-y-4">
             <p className="flex items-center justify-center gap-3 font-display text-2xl font-bold tracking-wide md:justify-start">

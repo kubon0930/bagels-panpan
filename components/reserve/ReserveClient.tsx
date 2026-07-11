@@ -89,7 +89,7 @@ export default function ReserveClient({
                 key={d.id}
                 type="button"
                 onClick={() => selectDay(d.id)}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
                   d.id === selectedDayId
                     ? "border-navy bg-navy text-paper"
                     : "border-line bg-warm text-ink/80 hover:border-navy/40"
@@ -103,8 +103,10 @@ export default function ReserveClient({
       )}
 
       {/* 販売日の見出し */}
-      <div className="rounded-t-card border border-line bg-navy px-6 py-5 text-paper">
-        <p className="text-lg font-bold tracking-wide">{day.dateLabel}</p>
+      <div className="rounded-t-card border border-line bg-navy px-5 py-5 text-paper sm:px-6">
+        <p className="whitespace-nowrap text-lg font-bold tracking-wide">
+          {day.dateLabel}
+        </p>
         <p className="mt-1 text-sm text-paper/80">
           {day.title ?? "予約販売"}
           {day.pickupNote ? `｜${day.pickupNote}` : ""}
@@ -135,7 +137,7 @@ export default function ReserveClient({
           return (
             <div
               key={item.salesItemId}
-              className={`bg-warm px-5 py-5 sm:px-6 ${item.soldOut ? "opacity-70" : ""}`}
+              className={`bg-warm px-4 py-5 sm:px-6 ${item.soldOut ? "opacity-70" : ""}`}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex min-w-0 items-start gap-3">
@@ -214,26 +216,28 @@ export default function ReserveClient({
         })}
       </div>
 
-      {/* 合計・予約に進む（下部固定バー） */}
-      <div className="sticky bottom-0 rounded-b-card border border-line bg-warm px-6 py-4 shadow-warm-lg">
+      {/* 合計・予約に進む（下部固定バー。safe-area とブラウザUIに配慮） */}
+      <div className="sticky bottom-0 rounded-b-card border border-line bg-warm px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 shadow-warm-lg sm:px-6">
         {error && (
           <p className="mb-3 rounded-lg bg-bagel/10 px-3 py-2 text-center text-sm font-medium text-bagel">
             {error}
           </p>
         )}
-        <div className="flex items-center justify-between gap-4">
-          <div>
+        <div className="flex items-center justify-between gap-3 sm:gap-4">
+          <div className="min-w-0">
             <p className="text-xs text-ink/60">
-              合計 {totalCount}点
+              <span className="whitespace-nowrap">合計 {totalCount}点</span>
               {paymentMode === "stripe" ? "（オンライン決済）" : "（店頭でお支払い）"}
             </p>
-            <p className="text-2xl font-bold text-navy">{yen(total)}</p>
+            <p className="whitespace-nowrap text-xl font-bold text-navy sm:text-2xl">
+              {yen(total)}
+            </p>
           </div>
           <button
             type="button"
             onClick={proceed}
             disabled={cartLines.length === 0 || !canReserve}
-            className="rounded-full bg-navy px-8 py-3.5 font-bold text-paper shadow-warm transition-all hover:-translate-y-0.5 hover:bg-navy-deep disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+            className="shrink-0 whitespace-nowrap rounded-full bg-navy px-6 py-3 font-bold text-paper shadow-warm transition-all hover:-translate-y-0.5 hover:bg-navy-deep disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0 sm:px-8 sm:py-3.5"
           >
             予約に進む
           </button>
