@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
 import { reservePath, shopInfo, socialLinks } from "@/data/site";
@@ -15,8 +15,28 @@ const navItems = [
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // メニュー表示中は背景スクロールを止め、下部追従CTAを非表示にする
+  // （MobileCta 側が body[data-menu-open] を見て隠れる）
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.setAttribute("data-menu-open", "");
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.removeAttribute("data-menu-open");
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.removeAttribute("data-menu-open");
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-line bg-warm/90 backdrop-blur">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b border-line ${
+        menuOpen ? "bg-warm" : "bg-warm/90 backdrop-blur"
+      }`}
+    >
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5 sm:px-8 md:h-20">
         <a
           href="#top"
@@ -76,6 +96,19 @@ export default function Header() {
         </button>
       </div>
 
+      {/*
+        メニュー表示中の背景スクリム。
+        メニュー下の残り画面をうっすら暗くして境界を綺麗に見せる（タップで閉じる）。
+        ヘッダーバー（h-16）には重ならないよう top-16 から敷く。
+      */}
+      <div
+        aria-hidden="true"
+        onClick={() => setMenuOpen(false)}
+        className={`fixed inset-x-0 bottom-0 top-16 -z-10 bg-navy-deep/35 transition-opacity duration-300 md:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+
       {/* モバイルメニュー（grid-rows で高さをなめらかに開閉） */}
       <div
         id="mobile-menu"
@@ -86,11 +119,11 @@ export default function Header() {
       >
         <nav
           aria-label="モバイルナビゲーション"
-          className={`min-h-0 overflow-hidden bg-warm transition-[visibility] duration-300 ${
+          className={`min-h-0 overflow-hidden rounded-b-3xl bg-warm shadow-warm-lg transition-[visibility] duration-300 ${
             menuOpen ? "visible" : "invisible"
           }`}
         >
-          <div className="border-t border-line px-5 pb-6 pt-2">
+          <div className="border-t border-line px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-1">
             <ul className="flex flex-col">
               {navItems.map((item) => (
                 <li key={item.href}>
@@ -107,16 +140,16 @@ export default function Header() {
             <Link
               href={reservePath}
               onClick={() => setMenuOpen(false)}
-              className="mt-5 block rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
+              className="mt-5 block whitespace-nowrap rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
             >
-              予約する
+              予約販売を見る
             </Link>
             <a
               href={socialLinks.instagram}
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => setMenuOpen(false)}
-              className="mt-3 block rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
+              className="mt-3 block whitespace-nowrap rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
             >
               Instagramを見る
               <span className="sr-only">（新しいタブで開きます）</span>

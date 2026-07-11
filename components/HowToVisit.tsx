@@ -48,7 +48,7 @@ function StepArrow() {
 export default function HowToVisit() {
   return (
     <section id="how-to-visit">
-      <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-16 sm:px-8 md:py-24">
         <SectionHeading
           eyebrow="How to visit"
           title={<span className="font-display">How to visit</span>}

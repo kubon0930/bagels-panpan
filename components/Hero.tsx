@@ -148,6 +148,7 @@ export default function Hero() {
           {/* スマホCTA：予約導線を主役に、Instagramは控えめに */}
           <div className="mx-auto max-w-sm space-y-3 md:hidden">
             <Link
+              id="hero-reserve-cta"
               href={reservePath}
               className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-toast px-6 py-3.5 font-bold text-navy-deep shadow-warm transition-colors hover:bg-paper"
             >
