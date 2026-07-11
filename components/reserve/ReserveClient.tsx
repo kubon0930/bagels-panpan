@@ -106,26 +106,26 @@ export default function ReserveClient({
         </div>
       )}
 
-      {/* 販売日カード（ヘッダー） */}
-      <div className="rounded-t-card border border-b-0 border-line bg-gradient-to-br from-navy-deep to-navy px-5 py-5 text-paper sm:px-7 sm:py-6">
+      {/* 販売日カード（ヘッダー）：日付 → 受け取り時間 → 補足 の優先順位 */}
+      <div className="rounded-t-card border border-b-0 border-line bg-gradient-to-br from-navy-deep to-navy px-5 py-4 text-paper sm:px-7 sm:py-6">
         <p className="font-display text-[11px] font-semibold uppercase tracking-[0.25em] text-toast">
           Pickup Day
         </p>
-        <p className="mt-1.5 whitespace-nowrap text-xl font-bold tracking-wide sm:text-2xl">
+        <p className="mt-1 whitespace-nowrap text-xl font-bold tracking-wide sm:text-2xl">
           {day.dateLabel}
         </p>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <span className="whitespace-nowrap rounded-full border border-paper/20 bg-paper/10 px-3 py-1 text-[13px] text-paper/90">
-            {day.title ?? "予約販売"}
-          </span>
+        <div className="mt-2.5 flex flex-wrap items-center gap-2">
           {day.pickupNote && (
-            <span className="whitespace-nowrap rounded-full border border-paper/20 bg-paper/10 px-3 py-1 text-[13px] text-paper/90">
+            <span className="whitespace-nowrap rounded-full border border-paper/20 bg-paper/10 px-3 py-1 text-[13px] font-medium text-paper">
               {day.pickupNote}
             </span>
           )}
+          <span className="whitespace-nowrap rounded-full border border-paper/15 bg-paper/5 px-3 py-1 text-[13px] text-paper/80">
+            {day.title ?? "予約販売"}
+          </span>
         </div>
         {day.description && (
-          <p className="mt-3 text-sm leading-relaxed text-paper/75">
+          <p className="mt-2.5 text-sm leading-relaxed text-paper/70">
             {day.description}
           </p>
         )}
@@ -139,7 +139,7 @@ export default function ReserveClient({
       )}
 
       {/* 商品一覧（小さなメニューカードとして見せる） */}
-      <div className="space-y-3 border-x border-line bg-cream/70 px-3 py-4 sm:px-4 sm:py-5">
+      <div className="space-y-2.5 border-x border-line bg-cream/70 px-3 py-3.5 sm:space-y-3 sm:px-4 sm:py-5">
         {day.items.length === 0 && (
           <div className="rounded-2xl bg-warm px-6 py-8 text-center text-sm text-ink/70">
             この販売日の商品は現在準備中です。
@@ -148,15 +148,16 @@ export default function ReserveClient({
         {day.items.map((item) => {
           const qty = quantities[item.salesItemId] ?? 0;
           const selected = qty > 0;
+          const soldOut = item.soldOut;
           return (
             <div
               key={item.salesItemId}
-              className={`rounded-2xl border bg-warm p-4 transition-colors sm:p-5 ${
-                item.soldOut
-                  ? "border-line opacity-60"
+              className={`rounded-2xl border p-3.5 transition-colors sm:p-5 ${
+                soldOut
+                  ? "border-line/70 bg-cream/50"
                   : selected
                     ? "border-toast/80 bg-toast/[0.06] shadow-warm"
-                    : "border-line"
+                    : "border-line bg-warm"
               }`}
             >
               <div className="flex items-start gap-3.5">
@@ -166,77 +167,111 @@ export default function ReserveClient({
                     alt={item.name}
                     width={80}
                     height={80}
-                    className="h-16 w-16 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20"
+                    className={`h-16 w-16 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20 ${
+                      soldOut ? "opacity-50 saturate-50" : ""
+                    }`}
                   />
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                    <h3 className="font-bold tracking-wide text-navy">
+                    <h3
+                      className={`font-bold tracking-wide ${
+                        soldOut ? "text-ink/45" : "text-navy"
+                      }`}
+                    >
                       {item.name}
                     </h3>
                     {item.isSeasonal && (
-                      <span className="whitespace-nowrap rounded-full bg-toast/20 px-2.5 py-0.5 text-[11px] font-bold text-bagel">
+                      <span
+                        className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+                          soldOut
+                            ? "bg-ink/5 text-ink/40"
+                            : "bg-toast/20 text-bagel"
+                        }`}
+                      >
                         季節限定
                       </span>
                     )}
                     {item.isRecommended && (
-                      <span className="whitespace-nowrap rounded-full bg-cream px-2.5 py-0.5 text-[11px] font-bold text-navy/70">
+                      <span
+                        className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
+                          soldOut
+                            ? "bg-ink/5 text-ink/40"
+                            : "bg-cream text-navy/70"
+                        }`}
+                      >
                         おすすめ
                       </span>
                     )}
                   </div>
                   {item.description && (
-                    <p className="mt-1.5 text-sm leading-relaxed text-ink/70">
+                    <p
+                      className={`mt-1 text-sm leading-relaxed ${
+                        soldOut ? "text-ink/35" : "text-ink/70"
+                      }`}
+                    >
                       {item.description}
                     </p>
                   )}
                   {item.allergyNote && (
-                    <p className="mt-1 text-xs text-bagel/90">
+                    <p
+                      className={`mt-0.5 text-xs ${
+                        soldOut ? "text-ink/35" : "text-bagel/90"
+                      }`}
+                    >
                       アレルギー：{item.allergyNote}
                     </p>
                   )}
                 </div>
               </div>
 
-              {/* 価格と数量操作（メニューカードの下段） */}
-              <div className="mt-3 flex items-center justify-between gap-3 border-t border-line/70 pt-3">
-                <p className="whitespace-nowrap font-bold tracking-wide text-navy">
+              {/* 価格・残数と数量操作（メニューカードの下段） */}
+              <div
+                className={`mt-2.5 flex items-center justify-between gap-3 border-t pt-2.5 ${
+                  soldOut ? "border-line/50" : "border-line/70"
+                }`}
+              >
+                <p
+                  className={`whitespace-nowrap font-bold tracking-wide ${
+                    soldOut ? "text-ink/40" : "text-navy"
+                  }`}
+                >
                   {yen(item.price)}
+                  {!soldOut && (
+                    <span className="ml-2.5 text-xs font-normal text-ink/50">
+                      残り{item.remaining}個
+                    </span>
+                  )}
                 </p>
-                {item.soldOut ? (
-                  <span className="inline-block whitespace-nowrap rounded-full bg-ink/10 px-3.5 py-1.5 text-xs font-bold text-ink/60">
+                {soldOut ? (
+                  <span className="inline-block whitespace-nowrap rounded-full border border-line bg-ink/5 px-3.5 py-1.5 text-xs font-bold text-ink/45">
                     売り切れ
                   </span>
                 ) : (
-                  <div className="flex flex-col items-end gap-1">
-                    <div className="flex items-center gap-1.5">
-                      <QtyButton
-                        label="減らす"
-                        variant="outline"
-                        onClick={() => setQty(item, qty - 1)}
-                        disabled={qty <= 0 || !canReserve}
-                      >
-                        −
-                      </QtyButton>
-                      <span
-                        className={`w-9 text-center text-lg font-bold tabular-nums ${
-                          selected ? "text-navy" : "text-ink/40"
-                        }`}
-                      >
-                        {qty}
-                      </span>
-                      <QtyButton
-                        label="増やす"
-                        variant="solid"
-                        onClick={() => setQty(item, qty + 1)}
-                        disabled={qty >= item.remaining || qty >= 10 || !canReserve}
-                      >
-                        ＋
-                      </QtyButton>
-                    </div>
-                    <p className="whitespace-nowrap text-xs text-ink/50">
-                      残り{item.remaining}個
-                    </p>
+                  <div className="flex items-center gap-1.5">
+                    <QtyButton
+                      label="減らす"
+                      variant="outline"
+                      onClick={() => setQty(item, qty - 1)}
+                      disabled={qty <= 0 || !canReserve}
+                    >
+                      −
+                    </QtyButton>
+                    <span
+                      className={`w-9 text-center text-lg font-bold tabular-nums ${
+                        selected ? "text-navy" : "text-ink/40"
+                      }`}
+                    >
+                      {qty}
+                    </span>
+                    <QtyButton
+                      label="増やす"
+                      variant="solid"
+                      onClick={() => setQty(item, qty + 1)}
+                      disabled={qty >= item.remaining || qty >= 10 || !canReserve}
+                    >
+                      ＋
+                    </QtyButton>
                   </div>
                 )}
               </div>
@@ -245,21 +280,42 @@ export default function ReserveClient({
         })}
       </div>
 
-      {/* 合計・予約に進む（PC・タブレットでは追従、スマホは下部固定バーを使用） */}
-      <div className="rounded-b-card border border-line bg-warm px-4 py-4 shadow-warm sm:sticky sm:bottom-0 sm:px-6 sm:shadow-warm-lg">
+      {/*
+        合計エリア。
+        スマホは合計表示のみ（予約導線は下部固定バーに一本化）、
+        PC・タブレットは従来どおり追従バー＋予約に進むボタン。
+      */}
+      <div className="rounded-b-card border border-line bg-warm px-4 py-3.5 shadow-warm sm:sticky sm:bottom-0 sm:px-6 sm:py-4 sm:shadow-warm-lg">
         {error && (
           <p className="mb-3 rounded-lg bg-bagel/10 px-3 py-2 text-center text-sm font-medium text-bagel">
             {error}
           </p>
         )}
-        <div className="flex items-center justify-between gap-3 sm:gap-4">
+
+        {/* スマホ：合計表示のみ */}
+        <div className="flex items-baseline justify-between gap-3 sm:hidden">
+          <p className="text-xs text-ink/60">
+            <span className="whitespace-nowrap">合計 {totalCount}点</span>
+            <span className="whitespace-nowrap">（{paymentLabel}）</span>
+          </p>
+          <p
+            className={`whitespace-nowrap text-xl font-bold ${
+              totalCount > 0 ? "text-navy" : "text-ink/40"
+            }`}
+          >
+            {yen(total)}
+          </p>
+        </div>
+
+        {/* PC・タブレット：合計＋予約に進む */}
+        <div className="hidden items-center justify-between gap-4 sm:flex">
           <div className="min-w-0">
             <p className="text-xs text-ink/60">
               <span className="whitespace-nowrap">合計 {totalCount}点</span>
               <span className="whitespace-nowrap">（{paymentLabel}）</span>
             </p>
             <p
-              className={`whitespace-nowrap text-xl font-bold sm:text-2xl ${
+              className={`whitespace-nowrap text-2xl font-bold ${
                 totalCount > 0 ? "text-navy" : "text-ink/40"
               }`}
             >
@@ -270,7 +326,7 @@ export default function ReserveClient({
             type="button"
             onClick={proceed}
             disabled={!canProceed}
-            className={`shrink-0 whitespace-nowrap rounded-full px-6 py-3 font-bold transition-all sm:px-8 sm:py-3.5 ${
+            className={`shrink-0 whitespace-nowrap rounded-full px-8 py-3.5 font-bold transition-all ${
               canProceed
                 ? "bg-navy text-paper shadow-warm hover:-translate-y-0.5 hover:bg-navy-deep"
                 : "cursor-not-allowed bg-ink/10 text-ink/40"
