@@ -32,10 +32,12 @@ export default async function ReservePage() {
           <h1 className="mt-2 whitespace-nowrap text-2xl font-bold tracking-wide text-navy sm:text-3xl">
             予約販売
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-ink/75 sm:mt-5 sm:max-w-xl sm:text-base sm:leading-loose">
-            販売日ごとに数量限定で、ベーグルを事前予約いただけます。
-            <br className="hidden sm:block" />
-            暑い日や混雑時も、スムーズにお受け取りいただけます。
+          <p className="mx-auto mt-3 max-w-[19rem] text-sm leading-loose text-ink/75 [text-wrap:balance] [word-break:keep-all] sm:mt-5 sm:max-w-xl sm:text-base">
+            販売日ごとに数量限定で、
+            <br className="sm:hidden" />
+            ベーグルを事前予約できます。
+            <br />
+            暑い日や混雑時も、スムーズに受け取れます。
           </p>
           {/* トップページとつながる小さなベーグルの飾り */}
           <div aria-hidden="true" className="mt-4 flex justify-center sm:mt-5">
