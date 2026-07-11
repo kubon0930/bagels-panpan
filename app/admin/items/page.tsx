@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Image from "next/image";
 import AdminShell from "@/components/admin/AdminShell";
 import { getSupabaseBrowser } from "@/lib/supabase/browser";
 import { formatDateJa, yen } from "@/lib/format";
@@ -96,6 +97,7 @@ function Items() {
 
 function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   async function patch(p: Partial<SalesItem>) {
     const supabase = getSupabaseBrowser();
@@ -103,7 +105,12 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
     await supabase.from("sales_items").update(p).eq("id", item.id);
     onChange();
   }
-  async function patchProduct(p: { name?: string; description?: string | null; allergy_note?: string | null }) {
+  async function patchProduct(p: {
+    name?: string;
+    description?: string | null;
+    allergy_note?: string | null;
+    image_url?: string | null;
+  }) {
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
     await supabase.from("products").update(p).eq("id", item.product_id);
@@ -123,7 +130,38 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
     onChange();
   }
 
+  async function uploadImage(file: File) {
+    const supabase = getSupabaseBrowser();
+    if (!supabase) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("画像は5MBまでにしてください。");
+      return;
+    }
+    setUploading(true);
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${item.product_id}/${Date.now()}.${ext}`;
+    const { error: upErr } = await supabase.storage
+      .from("product-images")
+      .upload(path, file, { upsert: true, cacheControl: "3600" });
+    if (upErr) {
+      setUploading(false);
+      alert(
+        "画像のアップロードに失敗しました。Supabaseで 0002_product_images.sql を実行済みかご確認ください。",
+      );
+      return;
+    }
+    const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+    await supabase.from("products").update({ image_url: data.publicUrl }).eq("id", item.product_id);
+    setUploading(false);
+    onChange();
+  }
+
+  async function removeImage() {
+    await patchProduct({ image_url: null });
+  }
+
   const remaining = item.stock_quantity - item.reserved_quantity;
+  const imageUrl = item.product?.image_url ?? null;
 
   return (
     <div className="rounded-card border border-line bg-warm p-5 shadow-warm">
@@ -152,6 +190,52 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
         className={`${inputClass} mt-3 w-full`}
         aria-label="商品説明"
       />
+
+      {/* 商品画像 */}
+      <div className="mt-3 flex items-center gap-4 rounded-xl border border-line bg-cream p-3">
+        <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-xl bg-warm">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={item.product?.name ?? "商品画像"}
+              width={80}
+              height={80}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="text-[10px] text-ink/40">画像なし</span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-ink/70">商品画像</p>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+            <label className="cursor-pointer rounded-full bg-navy px-4 py-1.5 text-xs font-medium text-paper hover:bg-navy-deep">
+              {uploading ? "アップロード中…" : imageUrl ? "画像を変更" : "画像を選ぶ"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={uploading}
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) uploadImage(f);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            {imageUrl && (
+              <button
+                type="button"
+                onClick={removeImage}
+                className="text-xs text-bagel underline underline-offset-2"
+              >
+                画像を削除
+              </button>
+            )}
+          </div>
+          <p className="mt-1 text-[11px] text-ink/50">JPG/PNG・5MBまで</p>
+        </div>
+      </div>
 
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Labeled label="価格(円)">

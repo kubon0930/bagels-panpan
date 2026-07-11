@@ -58,6 +58,11 @@ function CompleteInner() {
             <p className="mt-1 font-display text-2xl font-bold tracking-wider text-navy">
               {code}
             </p>
+            <p className="mt-3 text-xs leading-relaxed text-ink/70">
+              この予約番号のスクリーンショットを保存いただくか、お控えください。
+              <br />
+              （確認メールの送信はございません）
+            </p>
           </div>
         )}
 

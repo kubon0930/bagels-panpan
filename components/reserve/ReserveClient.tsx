@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { PaymentMode } from "@/lib/env";
 import type { ReserveDay } from "@/lib/reserve-data";
@@ -137,7 +138,17 @@ export default function ReserveClient({
               className={`bg-warm px-5 py-5 sm:px-6 ${item.soldOut ? "opacity-70" : ""}`}
             >
               <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
+                <div className="flex min-w-0 items-start gap-3">
+                  {item.image && (
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      width={80}
+                      height={80}
+                      className="h-16 w-16 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20"
+                    />
+                  )}
+                  <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-bold text-navy">{item.name}</h3>
                     {item.isSeasonal && (
@@ -162,6 +173,7 @@ export default function ReserveClient({
                     </p>
                   )}
                   <p className="mt-2 font-bold text-ink">{yen(item.price)}</p>
+                  </div>
                 </div>
 
                 {/* 数量 or 売り切れ */}

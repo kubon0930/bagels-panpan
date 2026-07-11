@@ -12,6 +12,7 @@ export type ReserveItem = {
   isSeasonal: boolean;
   isRecommended: boolean;
   allergyNote: string | null;
+  image: string | null;
 };
 
 export type ReserveSlot = {
@@ -108,6 +109,7 @@ export async function loadReserveDays(): Promise<ReserveDay[] | null> {
           name?: string;
           description?: string | null;
           allergy_note?: string | null;
+          image_url?: string | null;
         };
         return {
           salesItemId: it.id,
@@ -118,6 +120,7 @@ export async function loadReserveDays(): Promise<ReserveDay[] | null> {
           soldOut: remaining <= 0,
           isSeasonal: it.is_seasonal,
           isRecommended: it.is_recommended,
+          image: product.image_url ?? null,
           allergyNote: product.allergy_note ?? null,
         };
       }),
