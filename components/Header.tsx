@@ -96,6 +96,19 @@ export default function Header() {
         </button>
       </div>
 
+      {/*
+        メニュー表示中の背景スクリム。
+        メニュー下の残り画面をうっすら暗くして境界を綺麗に見せる（タップで閉じる）。
+        ヘッダーバー（h-16）には重ならないよう top-16 から敷く。
+      */}
+      <div
+        aria-hidden="true"
+        onClick={() => setMenuOpen(false)}
+        className={`fixed inset-x-0 bottom-0 top-16 -z-10 bg-navy-deep/35 transition-opacity duration-300 md:hidden ${
+          menuOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+      />
+
       {/* モバイルメニュー（grid-rows で高さをなめらかに開閉） */}
       <div
         id="mobile-menu"
@@ -106,12 +119,11 @@ export default function Header() {
       >
         <nav
           aria-label="モバイルナビゲーション"
-          className={`min-h-0 overflow-hidden bg-warm transition-[visibility] duration-300 ${
+          className={`min-h-0 overflow-hidden rounded-b-3xl bg-warm shadow-warm-lg transition-[visibility] duration-300 ${
             menuOpen ? "visible" : "invisible"
           }`}
         >
-          {/* 開いている間は画面下まで背景を確保し、Heroが透けて見えないようにする */}
-          <div className="flex min-h-[calc(100dvh-4rem)] flex-col border-t border-line px-5 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-2">
+          <div className="border-t border-line px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-1">
             <ul className="flex flex-col">
               {navItems.map((item) => (
                 <li key={item.href}>
@@ -128,7 +140,7 @@ export default function Header() {
             <Link
               href={reservePath}
               onClick={() => setMenuOpen(false)}
-              className="mt-6 block whitespace-nowrap rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
+              className="mt-5 block whitespace-nowrap rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
             >
               予約販売を見る
             </Link>
