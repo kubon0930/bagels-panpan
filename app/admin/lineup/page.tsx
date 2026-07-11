@@ -3,8 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import AdminShell from "@/components/admin/AdminShell";
+import BagelIllustration from "@/components/BagelIllustration";
 import { getSupabaseBrowser } from "@/lib/supabase/browser";
-import type { BagelTone } from "@/data/site";
+import {
+  bagelBaseOptions,
+  bagelToppingOptions,
+  normalizeBagelIllustration,
+  type BagelBase,
+  type BagelIllustrationSpec,
+  type BagelTopping,
+} from "@/lib/bagel-illustration";
 
 type LineupRow = {
   id: string;
@@ -13,16 +21,12 @@ type LineupRow = {
   description: string | null;
   image_url: string | null;
   tag: string | null;
-  tone: BagelTone;
+  /** 旧単一選択（後方互換のため残置。新規保存では変更しない） */
+  tone: string | null;
+  bagel_base: string | null;
+  bagel_topping: string | null;
   display_order: number;
   is_public: boolean;
-};
-
-const TONE_LABELS: Record<BagelTone, string> = {
-  golden: "こんがり（黄金色）",
-  cheese: "チーズ（濃い黄）",
-  chocolate: "チョコ（茶）",
-  seasonal: "季節（赤み）",
 };
 
 const inputClass =
@@ -64,7 +68,7 @@ function Lineup() {
       </h1>
       <p className="mt-2 text-sm leading-relaxed text-ink/70">
         ホームページ「その日並ぶベーグル」に表示される内容です。
-        写真を登録すると写真に、なければ焼き色のイラストで表示されます。
+        写真を登録すると写真に、なければ「ベース色＋トッピング」のイラストで表示されます。
         変更は公式サイトに最大1分ほどで反映されます。
       </p>
 
@@ -82,14 +86,110 @@ function Lineup() {
   );
 }
 
+/**
+ * ベース色×トッピングをピルで選ぶピッカー（プレビューつき）。
+ * 追加フォームと各商品の編集で共通利用する。
+ */
+function IllustrationPicker({
+  value,
+  onChange,
+}: {
+  value: BagelIllustrationSpec;
+  onChange: (next: BagelIllustrationSpec) => void;
+}) {
+  const pillClass = (selected: boolean) =>
+    `flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+      selected
+        ? "border-navy bg-navy/5 text-navy"
+        : "border-line bg-warm text-ink/70 hover:border-navy/40"
+    }`;
+
+  return (
+    <div className="rounded-xl border border-line bg-cream p-3">
+      <div className="flex flex-wrap items-start gap-4">
+        <div className="min-w-0 flex-1 space-y-3">
+          <div>
+            <p className="mb-1.5 text-xs font-medium text-ink/70">ベース色</p>
+            <div className="flex flex-wrap gap-1.5">
+              {bagelBaseOptions.map((o) => (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => onChange({ ...value, base: o.value })}
+                  aria-pressed={value.base === o.value}
+                  className={pillClass(value.base === o.value)}
+                >
+                  <BagelIllustration
+                    base={o.value}
+                    topping="none"
+                    holeColor="var(--color-warm)"
+                    className="h-5 w-5 shrink-0"
+                  />
+                  <span className="whitespace-nowrap">{o.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="mb-1.5 text-xs font-medium text-ink/70">トッピング</p>
+            <div className="flex flex-wrap gap-1.5">
+              {bagelToppingOptions.map((o) => (
+                <button
+                  key={o.value}
+                  type="button"
+                  onClick={() => onChange({ ...value, topping: o.value })}
+                  aria-pressed={value.topping === o.value}
+                  className={pillClass(value.topping === o.value)}
+                >
+                  <BagelIllustration
+                    base={value.base}
+                    topping={o.value}
+                    holeColor="var(--color-warm)"
+                    className="h-5 w-5 shrink-0"
+                  />
+                  <span className="whitespace-nowrap">{o.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* プレビュー */}
+        <div className="flex shrink-0 flex-col items-center gap-1 rounded-xl bg-warm px-4 py-3">
+          <BagelIllustration
+            base={value.base}
+            topping={value.topping}
+            holeColor="var(--color-warm)"
+            className="h-16 w-16"
+          />
+          <p className="text-[10px] text-ink/50">プレビュー</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Row({ item, onChange }: { item: LineupRow; onChange: () => void }) {
   const [uploading, setUploading] = useState(false);
+  // 新カラムが未設定の既存データは旧 tone からフォールバックして表示する
+  const [illustration, setIllustration] = useState<BagelIllustrationSpec>(() =>
+    normalizeBagelIllustration({
+      base: item.bagel_base,
+      topping: item.bagel_topping,
+      tone: item.tone,
+    }),
+  );
 
   async function patch(p: Partial<LineupRow>) {
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
     await supabase.from("lineup_items").update(p).eq("id", item.id);
     onChange();
+  }
+
+  function updateIllustration(next: BagelIllustrationSpec) {
+    setIllustration(next);
+    patch({ bagel_base: next.base, bagel_topping: next.topping });
   }
 
   async function uploadImage(file: File) {
@@ -174,7 +274,12 @@ function Row({ item, onChange }: { item: LineupRow; onChange: () => void }) {
           {item.image_url ? (
             <Image src={item.image_url} alt={item.name} width={80} height={80} className="h-full w-full object-cover" />
           ) : (
-            <span className="text-[10px] text-ink/40">画像なし</span>
+            <BagelIllustration
+              base={illustration.base}
+              topping={illustration.topping}
+              holeColor="var(--color-warm)"
+              className="h-14 w-14"
+            />
           )}
         </div>
         <div className="min-w-0">
@@ -201,24 +306,18 @@ function Row({ item, onChange }: { item: LineupRow; onChange: () => void }) {
             )}
           </div>
           <p className="mt-1 text-[11px] text-ink/50">
-            画像なしの場合、下の「焼き色」のイラストで表示されます
+            画像なしの場合、下の「イラスト」設定で表示されます
           </p>
         </div>
       </div>
 
+      {/* イラスト（ベース色 × トッピング） */}
+      <div className="mt-3">
+        <p className="mb-1 text-xs text-ink/70">イラスト（画像なし時）</p>
+        <IllustrationPicker value={illustration} onChange={updateIllustration} />
+      </div>
+
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        <label className="block">
-          <span className="mb-1 block text-xs text-ink/70">焼き色（画像なし時）</span>
-          <select
-            defaultValue={item.tone}
-            onChange={(e) => patch({ tone: e.target.value as BagelTone })}
-            className={`${inputClass} w-full`}
-          >
-            {(Object.keys(TONE_LABELS) as BagelTone[]).map((t) => (
-              <option key={t} value={t}>{TONE_LABELS[t]}</option>
-            ))}
-          </select>
-        </label>
         <label className="block">
           <span className="mb-1 block text-xs text-ink/70">表示順</span>
           <input type="number" defaultValue={item.display_order} onBlur={(e) => patch({ display_order: Number(e.target.value) })} className={`${inputClass} w-full`} />
@@ -237,7 +336,10 @@ function Row({ item, onChange }: { item: LineupRow; onChange: () => void }) {
 function AddForm({ onAdded, nextOrder }: { onAdded: () => void; nextOrder: number }) {
   const [name, setName] = useState("");
   const [nameJa, setNameJa] = useState("");
-  const [tone, setTone] = useState<BagelTone>("golden");
+  const [illustration, setIllustration] = useState<BagelIllustrationSpec>({
+    base: "golden" as BagelBase,
+    topping: "none" as BagelTopping,
+  });
   const [saving, setSaving] = useState(false);
 
   async function add(e: React.FormEvent) {
@@ -248,13 +350,14 @@ function AddForm({ onAdded, nextOrder }: { onAdded: () => void; nextOrder: numbe
     await supabase.from("lineup_items").insert({
       name,
       name_ja: nameJa || null,
-      tone,
+      bagel_base: illustration.base,
+      bagel_topping: illustration.topping,
       display_order: nextOrder,
       is_public: true,
     });
     setName("");
     setNameJa("");
-    setTone("golden");
+    setIllustration({ base: "golden", topping: "none" });
     setSaving(false);
     onAdded();
   }
@@ -262,28 +365,26 @@ function AddForm({ onAdded, nextOrder }: { onAdded: () => void; nextOrder: numbe
   return (
     <form onSubmit={add} className="mt-6 rounded-card border border-dashed border-navy/30 bg-cream p-5">
       <p className="mb-3 text-sm font-bold text-bagel">ベーグルを追加</p>
-      <div className="flex flex-wrap items-end gap-2">
-        <label className="block flex-1">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="block">
           <span className="mb-1 block text-xs text-ink/70">商品名（英字）</span>
           <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={`${inputClass} w-full`} placeholder="Plain Bagel" />
         </label>
         <label className="block">
           <span className="mb-1 block text-xs text-ink/70">日本語名</span>
-          <input type="text" value={nameJa} onChange={(e) => setNameJa(e.target.value)} className={`${inputClass} w-32`} placeholder="プレーン" />
+          <input type="text" value={nameJa} onChange={(e) => setNameJa(e.target.value)} className={`${inputClass} w-full`} placeholder="プレーン" />
         </label>
-        <label className="block">
-          <span className="mb-1 block text-xs text-ink/70">焼き色</span>
-          <select value={tone} onChange={(e) => setTone(e.target.value as BagelTone)} className={`${inputClass}`}>
-            {(Object.keys(TONE_LABELS) as BagelTone[]).map((t) => (
-              <option key={t} value={t}>{TONE_LABELS[t]}</option>
-            ))}
-          </select>
-        </label>
-        <button type="submit" disabled={saving} className="rounded-full bg-navy px-6 py-2.5 text-sm font-medium text-paper hover:bg-navy-deep disabled:opacity-50">
+      </div>
+      <div className="mt-3">
+        <p className="mb-1 text-xs text-ink/70">イラスト（画像なし時）</p>
+        <IllustrationPicker value={illustration} onChange={setIllustration} />
+      </div>
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <p className="text-xs text-ink/60">追加後、説明文や画像を登録できます。</p>
+        <button type="submit" disabled={saving} className="shrink-0 rounded-full bg-navy px-6 py-2.5 text-sm font-medium text-paper hover:bg-navy-deep disabled:opacity-50">
           {saving ? "追加中…" : "追加"}
         </button>
       </div>
-      <p className="mt-2 text-xs text-ink/60">追加後、説明文や画像を登録できます。</p>
     </form>
   );
 }
