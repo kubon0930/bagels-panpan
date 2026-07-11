@@ -119,6 +119,11 @@ export async function POST(request: NextRequest) {
           },
         })),
         metadata: { order_id: result.order_id, reservation_code: result.reservation_code },
+        // PaymentIntent にも order_id を載せる（payment_intent.payment_failed で注文を特定するため。
+        // セッションの metadata は PaymentIntent には自動で引き継がれない）
+        payment_intent_data: {
+          metadata: { order_id: result.order_id, reservation_code: result.reservation_code },
+        },
         expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
         success_url: `${base}/reserve/complete?code=${result.reservation_code}`,
         cancel_url: `${base}/reserve/cancel?order=${result.order_id}`,

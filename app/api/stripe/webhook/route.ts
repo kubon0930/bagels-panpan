@@ -10,10 +10,14 @@ export const dynamic = "force-dynamic";
 
 /**
  * Stripe Webhook。
- * - checkout.session.completed → 支払い確定（paid / confirmed）
- * - checkout.session.expired   → 期限切れ（在庫を戻す）
- * - payment_intent.payment_failed → 失敗（在庫を戻す）
- * 署名検証を必ず行う。
+ * - checkout.session.completed → 支払い確定（paid / confirmed）。在庫は予約時に確保済みのため触らない。
+ * - checkout.session.expired   → 期限切れ（cancel_order で在庫を戻す）。決済未完了の在庫解放はここで行う。
+ * - payment_intent.payment_failed → payment_status を failed に記録するのみ（在庫は戻さない）。
+ *     Checkout は同一セッション内で再試行できるため、失敗ごとに在庫を戻すと
+ *     「戻す→再試行成功で確定」でオーバー販売になり得る。よって在庫の解放は
+ *     セッション期限切れ(expired)に一本化し、確実にオーバー販売を防ぐ。
+ * 署名検証を必ず行う。冪等性：completed は pending_payment の注文のみ確定、
+ * expired は cancel_order 内で二重解放を防止。
  */
 export async function POST(request: NextRequest) {
   const stripe = getStripe();
