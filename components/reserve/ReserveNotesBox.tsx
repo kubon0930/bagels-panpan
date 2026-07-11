@@ -4,9 +4,9 @@ import { reserveNotes, socialLinks } from "@/data/site";
 export default function ReserveNotesBox({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`rounded-2xl border border-line bg-cream px-5 py-4 text-sm leading-relaxed text-ink/80 ${className}`}
+      className={`rounded-2xl border border-line bg-cream px-4 py-3.5 text-[13px] leading-relaxed text-ink/75 sm:px-5 sm:py-4 sm:text-sm ${className}`}
     >
-      <ul className="space-y-1">
+      <ul className="space-y-1.5">
         {reserveNotes.map((note) => (
           <li key={note} className="flex gap-2">
             <span aria-hidden="true" className="text-bagel">
