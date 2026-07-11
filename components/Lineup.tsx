@@ -3,12 +3,29 @@ import BagelGraphic from "@/components/BagelGraphic";
 import FadeIn from "@/components/FadeIn";
 import SectionHeading from "@/components/SectionHeading";
 import { menuItems, socialLinks } from "@/data/site";
+import { loadLineupItems, type LineupCard } from "@/lib/lineup-data";
 
 /**
  * その日並ぶベーグルの紹介セクション。
  * 固定メニューではなくラインナップ例として見せる（内容は日によって変わる）。
+ *
+ * 表示内容は管理画面（/admin/lineup）から編集できる lineup_items テーブルを使う。
+ * Supabase が未設定・0件のときは data/site.ts の menuItems にフォールバックする。
  */
-export default function Lineup() {
+export default async function Lineup() {
+  const dbItems = await loadLineupItems();
+  const items: LineupCard[] =
+    dbItems ??
+    menuItems.map((m) => ({
+      key: m.name,
+      name: m.name,
+      nameJa: m.nameJa ?? null,
+      description: m.description,
+      tag: m.tag ?? null,
+      tone: m.tone ?? "golden",
+      image: m.image ?? null,
+    }));
+
   return (
     <section id="lineup">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 md:py-24">
@@ -25,12 +42,12 @@ export default function Lineup() {
         />
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {menuItems.map((item, index) => (
-            <FadeIn key={item.name} delay={index * 80} className="h-full">
+          {items.map((item, index) => (
+            <FadeIn key={item.key} delay={index * 80} className="h-full">
               <article className="group h-full rounded-card border border-line bg-warm p-5 shadow-warm transition-all hover:-translate-y-1 hover:shadow-warm-lg">
                 {/*
                   商品写真エリア。
-                  data/site.ts の menuItems に image を設定すると写真表示に切り替わります。
+                  管理画面で画像を登録すると写真表示に、なければ焼き色グラフィックになる。
                 */}
                 <div className="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-2xl bg-cream">
                   {item.image ? (
@@ -64,9 +81,11 @@ export default function Lineup() {
                       </span>
                     )}
                   </h3>
-                  <p className="text-sm leading-relaxed text-ink/80">
-                    {item.description}
-                  </p>
+                  {item.description && (
+                    <p className="text-sm leading-relaxed text-ink/80">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
               </article>
             </FadeIn>

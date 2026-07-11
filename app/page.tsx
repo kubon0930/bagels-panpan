@@ -18,6 +18,9 @@ import {
   socialLinks,
 } from "@/data/site";
 
+// ラインナップは管理画面で編集できるため、最大60秒ごとにページを再生成して反映する。
+export const revalidate = 60;
+
 /**
  * LocalBusiness(Bakery) の構造化データ。
  * 閉店時刻は「売り切れ次第」で不確かなため記載せず、
