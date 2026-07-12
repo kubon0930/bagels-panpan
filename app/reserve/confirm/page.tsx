@@ -166,7 +166,7 @@ export default function ConfirmPage() {
               <p className="mt-2 text-xs text-ink/60">
                 {paymentMode === "stripe"
                   ? "この後、オンライン決済画面に進みます。"
-                  : "お支払いは店頭でお願いします（QRコード決済可）。"}
+                  : "お支払いは店頭でお願いします（現金・PayPay可）。"}
               </p>
             </section>
 

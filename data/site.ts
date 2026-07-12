@@ -19,7 +19,7 @@ export const shopInfo = {
   areaLabel: "Nakaitabashi / Tokyo",
   services: "テイクアウト",
   reservation: "通常の取り置きは不可（予約販売は受付中の販売日のみ）",
-  payment: "QRコード決済可（カード・電子マネー不可）",
+  payment: "現金・PayPay（カード・電子マネー不可）",
   brandCopy: "もちっと、今日を満たすベーグル。",
   /** 店頭の目印（Access で使用） */
   landmark: "ネイビーの外観と「Bagels Panpan.」の白い看板が目印です。",
@@ -199,7 +199,7 @@ export const faqItems: FaqItem[] = [
   {
     question: "支払い方法は？",
     answer:
-      "QRコード決済に対応しています。カード・電子マネーはご利用いただけません。",
+      "現金とPayPayをご利用いただけます。カード・電子マネーはご利用いただけません。",
   },
   {
     question: "売り切れることはありますか？",

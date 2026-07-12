@@ -28,8 +28,8 @@ export default function PrivacyPage() {
         <h2 className="text-base font-bold text-navy">3. 第三者提供</h2>
         <p className="mt-2">
           法令に基づく場合を除き、ご本人の同意なく第三者へ提供することはありません。
-          オンライン決済を利用する場合、決済処理のために決済代行事業者（Stripe）へ
-          必要な情報を送信します。
+          将来オンライン決済を導入した場合は、決済処理のために決済代行事業者へ
+          必要な情報を送信します（導入時に本ポリシーを更新します）。
         </p>
       </section>
       <section>
