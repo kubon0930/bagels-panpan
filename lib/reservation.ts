@@ -32,6 +32,13 @@ export type Product = {
   image_url: string | null;
   allergy_note: string | null;
   is_active: boolean;
+  /** 画像なし時のイラスト（lib/bagel-illustration.ts の選択肢） */
+  bagel_base: string | null;
+  bagel_topping: string | null;
+  /** 定番商品（管理画面の「定番から追加」に表示）。migration 0005 未実行時は undefined */
+  is_standard: boolean | null;
+  /** 定番追加時の既定価格（円） */
+  default_price: number | null;
 };
 
 export type SalesItem = {

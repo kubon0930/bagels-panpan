@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import BagelIllustration from "@/components/BagelIllustration";
 import type { PaymentMode } from "@/lib/env";
 import type { ReserveDay } from "@/lib/reserve-data";
 import {
@@ -161,7 +162,7 @@ export default function ReserveClient({
               }`}
             >
               <div className="flex items-start gap-3.5">
-                {item.image && (
+                {item.image ? (
                   <Image
                     src={item.image}
                     alt={item.name}
@@ -171,6 +172,19 @@ export default function ReserveClient({
                       soldOut ? "opacity-50 saturate-50" : ""
                     }`}
                   />
+                ) : (
+                  <div
+                    className={`grid h-16 w-16 shrink-0 place-items-center rounded-xl bg-cream sm:h-20 sm:w-20 ${
+                      soldOut ? "opacity-50 saturate-50" : ""
+                    }`}
+                  >
+                    <BagelIllustration
+                      base={item.illustration.base}
+                      topping={item.illustration.topping}
+                      holeColor="var(--color-cream)"
+                      className="h-12 w-12 sm:h-14 sm:w-14"
+                    />
+                  </div>
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
