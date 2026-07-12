@@ -1,4 +1,8 @@
 // 予約ページ用のデータ取得（サーバー専用）。anonクライアント＋RLSで公開分だけ取得する。
+import {
+  normalizeBagelIllustration,
+  type BagelIllustrationSpec,
+} from "@/lib/bagel-illustration";
 import { formatDateJa, formatTime } from "@/lib/format";
 import { getSupabaseAnonServer } from "@/lib/supabase/server";
 
@@ -13,6 +17,8 @@ export type ReserveItem = {
   isRecommended: boolean;
   allergyNote: string | null;
   image: string | null;
+  /** 画像なし時に表示するイラスト（ベース色×トッピング） */
+  illustration: BagelIllustrationSpec;
 };
 
 export type ReserveSlot = {
@@ -110,6 +116,8 @@ export async function loadReserveDays(): Promise<ReserveDay[] | null> {
           description?: string | null;
           allergy_note?: string | null;
           image_url?: string | null;
+          bagel_base?: string | null;
+          bagel_topping?: string | null;
         };
         return {
           salesItemId: it.id,
@@ -122,6 +130,10 @@ export async function loadReserveDays(): Promise<ReserveDay[] | null> {
           isRecommended: it.is_recommended,
           image: product.image_url ?? null,
           allergyNote: product.allergy_note ?? null,
+          illustration: normalizeBagelIllustration({
+            base: product.bagel_base ?? null,
+            topping: product.bagel_topping ?? null,
+          }),
         };
       }),
     });

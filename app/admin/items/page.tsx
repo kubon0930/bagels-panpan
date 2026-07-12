@@ -3,9 +3,15 @@
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import AdminShell from "@/components/admin/AdminShell";
+import BagelIllustration from "@/components/BagelIllustration";
+import IllustrationPicker from "@/components/admin/IllustrationPicker";
+import {
+  normalizeBagelIllustration,
+  type BagelIllustrationSpec,
+} from "@/lib/bagel-illustration";
 import { getSupabaseBrowser } from "@/lib/supabase/browser";
 import { formatDateJa, yen } from "@/lib/format";
-import type { SalesDay, SalesItem } from "@/lib/reservation";
+import type { Product, SalesDay, SalesItem } from "@/lib/reservation";
 
 export default function ItemsPage() {
   return (
@@ -88,6 +94,7 @@ function Items() {
             ))}
           </div>
 
+          <StandardItemsPicker dayId={dayId} items={items} onAdded={loadItems} />
           <AddItemForm dayId={dayId} onAdded={loadItems} />
         </>
       )}
@@ -98,6 +105,12 @@ function Items() {
 function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) {
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [illustration, setIllustration] = useState<BagelIllustrationSpec>(() =>
+    normalizeBagelIllustration({
+      base: item.product?.bagel_base,
+      topping: item.product?.bagel_topping,
+    }),
+  );
 
   async function patch(p: Partial<SalesItem>) {
     const supabase = getSupabaseBrowser();
@@ -105,16 +118,35 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
     await supabase.from("sales_items").update(p).eq("id", item.id);
     onChange();
   }
-  async function patchProduct(p: {
-    name?: string;
-    description?: string | null;
-    allergy_note?: string | null;
-    image_url?: string | null;
-  }) {
+  async function patchProduct(p: Partial<Product>) {
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
-    await supabase.from("products").update(p).eq("id", item.product_id);
+    const { error } = await supabase
+      .from("products")
+      .update(p)
+      .eq("id", item.product_id);
+    if (error) {
+      alert(
+        "保存に失敗しました。Supabaseで 0005_product_illustration_presets.sql を実行済みかご確認ください。",
+      );
+      return;
+    }
     onChange();
+  }
+
+  function updateIllustration(next: BagelIllustrationSpec) {
+    setIllustration(next);
+    patchProduct({ bagel_base: next.base, bagel_topping: next.topping });
+  }
+
+  // 定番ON時は、現在の価格を「定番の既定価格」として一緒に保存する
+  function toggleStandard() {
+    const next = !item.product?.is_standard;
+    patchProduct(
+      next
+        ? { is_standard: true, default_price: item.price }
+        : { is_standard: false },
+    );
   }
   async function remove() {
     if (!confirm(`「${item.product?.name}」を削除しますか？`)) return;
@@ -203,7 +235,12 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-[10px] text-ink/40">画像なし</span>
+            <BagelIllustration
+              base={illustration.base}
+              topping={illustration.topping}
+              holeColor="var(--color-warm)"
+              className="h-14 w-14"
+            />
           )}
         </div>
         <div className="min-w-0">
@@ -237,6 +274,30 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
         </div>
       </div>
 
+      {/* イラスト設定（普段は使わないので折りたたみ） */}
+      <details className="group mt-3 rounded-xl border border-line bg-cream/60">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-xs font-medium text-ink/70 [&::-webkit-details-marker]:hidden">
+          <span className="flex items-center gap-2">
+            <BagelIllustration
+              base={illustration.base}
+              topping={illustration.topping}
+              holeColor="var(--color-cream)"
+              className="h-5 w-5 shrink-0"
+            />
+            イラストを変更（画像なし時の表示）
+          </span>
+          <span
+            aria-hidden="true"
+            className="shrink-0 text-ink/40 transition-transform duration-200 group-open:rotate-180"
+          >
+            ▾
+          </span>
+        </summary>
+        <div className="px-3 pb-3">
+          <IllustrationPicker value={illustration} onChange={updateIllustration} />
+        </div>
+      </details>
+
       <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Labeled label="価格(円)">
           <input type="number" min={0} defaultValue={item.price} onBlur={(e) => patch({ price: Number(e.target.value) })} className={`${inputClass} w-full`} />
@@ -266,10 +327,112 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
       <div className="mt-3 flex flex-wrap items-center gap-2">
         <FlagButton label="季節限定" on={item.is_seasonal} onClick={() => patch({ is_seasonal: !item.is_seasonal })} />
         <FlagButton label="おすすめ" on={item.is_recommended} onClick={() => patch({ is_recommended: !item.is_recommended })} />
+        <FlagButton
+          label="定番に登録"
+          on={!!item.product?.is_standard}
+          onClick={toggleStandard}
+        />
         <span className="ml-auto text-xs text-ink/50">単価 {yen(item.price)}</span>
         <button type="button" onClick={remove} disabled={busy} className="text-xs text-bagel underline underline-offset-2">
           削除
         </button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 「定番に登録」した商品をワンタップでこの販売日に追加するピッカー。
+ * 定番商品は products.is_standard で管理し、価格は登録時の既定価格を使う。
+ */
+function StandardItemsPicker({
+  dayId,
+  items,
+  onAdded,
+}: {
+  dayId: string;
+  items: SalesItem[];
+  onAdded: () => void;
+}) {
+  const [standards, setStandards] = useState<Product[]>([]);
+  const [addingId, setAddingId] = useState("");
+
+  const load = useCallback(async () => {
+    const supabase = getSupabaseBrowser();
+    if (!supabase) return;
+    const { data } = await supabase
+      .from("products")
+      .select("*")
+      .eq("is_standard", true)
+      .order("name", { ascending: true });
+    setStandards((data ?? []) as Product[]);
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load, items]);
+
+  // すでにこの販売日に入っている商品は追加済みとして表示する
+  const usedProductIds = new Set(items.map((i) => i.product_id));
+
+  async function addStandard(p: Product) {
+    const supabase = getSupabaseBrowser();
+    if (!supabase) return;
+    setAddingId(p.id);
+    await supabase.from("sales_items").insert({
+      sales_day_id: dayId,
+      product_id: p.id,
+      price: p.default_price ?? 350,
+      stock_quantity: 10,
+      is_public: true,
+    });
+    setAddingId("");
+    onAdded();
+  }
+
+  if (standards.length === 0) return null;
+
+  return (
+    <div className="mt-6 rounded-card border border-line bg-warm p-5 shadow-warm">
+      <p className="text-sm font-bold text-bagel">定番から追加</p>
+      <p className="mt-1 text-xs text-ink/60">
+        「定番に登録」した商品をワンタップで追加できます（価格は登録時のもの・販売数10で追加。あとから変更できます）。
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {standards.map((p) => {
+          const used = usedProductIds.has(p.id);
+          const spec = normalizeBagelIllustration({
+            base: p.bagel_base,
+            topping: p.bagel_topping,
+          });
+          return (
+            <button
+              key={p.id}
+              type="button"
+              disabled={used || addingId === p.id}
+              onClick={() => addStandard(p)}
+              className={`flex items-center gap-2 rounded-full border px-3 py-2 text-xs font-medium transition-colors ${
+                used
+                  ? "cursor-default border-line bg-cream text-ink/40"
+                  : "border-navy/30 bg-warm text-navy hover:border-navy hover:bg-navy/5"
+              }`}
+            >
+              <BagelIllustration
+                base={spec.base}
+                topping={spec.topping}
+                holeColor="var(--color-warm)"
+                className="h-6 w-6 shrink-0"
+              />
+              <span className="whitespace-nowrap">{p.name}</span>
+              <span className="whitespace-nowrap text-ink/50">
+                {p.default_price != null ? yen(p.default_price) : ""}
+              </span>
+              <span className="whitespace-nowrap font-bold">
+                {used ? "追加済み" : addingId === p.id ? "追加中…" : "＋追加"}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
