@@ -173,12 +173,54 @@ function DayCard({ day, onChange }: { day: DayWithSlots; onChange: () => void })
   }
 
   async function remove() {
-    if (!confirm(`${formatDateJa(day.date)} を削除しますか？（予約がある場合は削除できません）`)) return;
+    if (!confirm(`${formatDateJa(day.date)} を削除しますか？`)) return;
     const supabase = getSupabaseBrowser();
     if (!supabase) return;
+
+    // まず通常削除（商品・時間帯は cascade で一緒に消える）
     const { error } = await supabase.from("sales_days").delete().eq("id", day.id);
-    if (error) {
-      alert("この販売日には予約または商品が紐づいているため削除できません。先に非公開にしてください。");
+    if (!error) {
+      onChange();
+      return;
+    }
+
+    // 予約が紐づいている場合：全てキャンセル済み・期限切れなら記録ごと完全削除できる
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("id, order_status")
+      .eq("sales_day_id", day.id);
+    const active = (orders ?? []).filter(
+      (o) => o.order_status !== "cancelled" && o.order_status !== "expired",
+    );
+    if (active.length > 0) {
+      alert(
+        `この販売日には有効な予約が${active.length}件あるため削除できません。\n「予約一覧」から予約をキャンセルすると削除できるようになります。`,
+      );
+      return;
+    }
+    if (
+      !confirm(
+        `この販売日にはキャンセル済み・期限切れの予約記録が${(orders ?? []).length}件あります。\n予約記録ごと完全に削除しますか？（元に戻せません）`,
+      )
+    )
+      return;
+
+    const { error: delOrdersErr } = await supabase
+      .from("orders")
+      .delete()
+      .eq("sales_day_id", day.id);
+    if (delOrdersErr) {
+      alert(
+        "予約記録の削除に失敗しました。Supabaseで 0006_admin_delete_orders.sql を実行済みかご確認ください。",
+      );
+      return;
+    }
+    const { error: delDayErr } = await supabase
+      .from("sales_days")
+      .delete()
+      .eq("id", day.id);
+    if (delDayErr) {
+      alert("販売日の削除に失敗しました。時間をおいてもう一度お試しください。");
       return;
     }
     onChange();

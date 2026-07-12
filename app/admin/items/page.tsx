@@ -156,7 +156,18 @@ function ItemRow({ item, onChange }: { item: SalesItem; onChange: () => void }) 
     const { error } = await supabase.from("sales_items").delete().eq("id", item.id);
     setBusy(false);
     if (error) {
-      alert("この商品には予約があるため削除できません。非公開にしてください。");
+      // 予約記録が紐づく商品は削除できない（記録保護のため）。代わりに非公開を提案する
+      if (
+        confirm(
+          "この商品には予約があるため削除できません。\n代わりに非公開にしますか？（お客様のページから見えなくなります）",
+        )
+      ) {
+        await supabase
+          .from("sales_items")
+          .update({ is_public: false })
+          .eq("id", item.id);
+        onChange();
+      }
       return;
     }
     onChange();
