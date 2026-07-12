@@ -6,12 +6,12 @@ import { conceptScenes, shopInfo } from "@/data/site";
 
 /* シーンカード用の小さな線画アイコン */
 
-function MorningIcon() {
+function CoffeeIcon() {
   return (
-    <svg viewBox="0 0 32 32" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-      <circle cx="16" cy="18" r="6" />
-      <path d="M16 6v3M6 18H3m26 0h-3M8.9 10.9 6.8 8.8m18.4 2.1 2.1-2.1" />
-      <path d="M6 26h20" />
+    <svg viewBox="0 0 32 32" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M6 13h16v6a7 7 0 0 1-7 7h-2a7 7 0 0 1-7-7v-6Z" />
+      <path d="M22 15h2a3 3 0 0 1 0 6h-2" />
+      <path d="M11 9c0-1.4.9-1.9.9-3.3M16.5 9c0-1.4.9-1.9.9-3.3" />
     </svg>
   );
 }
@@ -36,7 +36,7 @@ function GiftIcon() {
   );
 }
 
-const sceneIcons = [<MorningIcon key="m" />, <LunchIcon key="l" />, <GiftIcon key="g" />];
+const sceneIcons = [<LunchIcon key="l" />, <CoffeeIcon key="c" />, <GiftIcon key="g" />];
 
 export default function Concept() {
   return (
@@ -64,7 +64,7 @@ export default function Concept() {
             <p>
               外は香ばしく、中はもちっと。
               <br />
-              朝ごはんにも、ランチにも、誰かへの手土産にも。
+              ランチにも、おうち時間にも、誰かへの手土産にも。
               <br />
               ひとつ食べるだけで、心もお腹も
               <span className="font-display font-semibold italic text-bagel">

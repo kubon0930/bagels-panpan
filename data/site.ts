@@ -158,16 +158,16 @@ export const menuItems: MenuItem[] = [
 /** Concept セクションの「毎日のシーン」ミニカード */
 export const conceptScenes = [
   {
-    title: "朝ごはんに",
-    text: "焼きたてをそのまま、シンプルに。",
+    title: "ランチに",
+    text: "気分で選ぶ、今日の一つを。",
   },
   {
-    title: "ランチに",
-    text: "好きな具材をはさんで、自分だけのサンドに。",
+    title: "おうち時間に",
+    text: "ほっとひと息の、おともに。",
   },
   {
     title: "手土産に",
-    text: "紙袋に詰めて、大切な人への小さな贈りものに。",
+    text: "大切な人への、小さな贈りものに。",
   },
 ] as const;
 
