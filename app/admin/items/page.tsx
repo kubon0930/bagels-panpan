@@ -475,20 +475,21 @@ function AddItemForm({ dayId, onAdded }: { dayId: string; onAdded: () => void })
   return (
     <form onSubmit={add} className="mt-6 rounded-card border border-dashed border-navy/30 bg-cream p-5">
       <p className="mb-3 text-sm font-bold text-bagel">この販売日に商品を追加</p>
+      {/* スマホは商品名を1行目全幅にし、価格・販売数・追加を2行目に折り返す */}
       <div className="flex flex-wrap items-end gap-2">
-        <label className="block flex-1">
+        <label className="block w-full sm:w-auto sm:flex-1">
           <span className="mb-1 block text-xs text-ink/70">商品名</span>
           <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={`${inputClass} w-full`} placeholder="プレーン" />
         </label>
-        <label className="block">
+        <label className="block min-w-0 flex-1 sm:flex-none">
           <span className="mb-1 block text-xs text-ink/70">価格</span>
-          <input type="number" min={0} value={price} onChange={(e) => setPrice(e.target.value)} className={`${inputClass} w-24`} />
+          <input type="number" min={0} value={price} onChange={(e) => setPrice(e.target.value)} className={`${inputClass} w-full sm:w-24`} />
         </label>
-        <label className="block">
+        <label className="block min-w-0 flex-1 sm:flex-none">
           <span className="mb-1 block text-xs text-ink/70">販売数</span>
-          <input type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} className={`${inputClass} w-24`} />
+          <input type="number" min={0} value={stock} onChange={(e) => setStock(e.target.value)} className={`${inputClass} w-full sm:w-24`} />
         </label>
-        <button type="submit" disabled={saving} className="rounded-full bg-navy px-6 py-2.5 text-sm font-medium text-paper hover:bg-navy-deep disabled:opacity-50">
+        <button type="submit" disabled={saving} className="shrink-0 whitespace-nowrap rounded-full bg-navy px-6 py-2.5 text-sm font-medium text-paper hover:bg-navy-deep disabled:opacity-50">
           {saving ? "追加中…" : "追加"}
         </button>
       </div>
