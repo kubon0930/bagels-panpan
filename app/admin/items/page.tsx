@@ -482,7 +482,7 @@ function AddItemForm({ dayId, onAdded }: { dayId: string; onAdded: () => void })
           <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className={`${inputClass} w-full`} placeholder="プレーン" />
         </label>
         <label className="block min-w-0 flex-1 sm:flex-none">
-          <span className="mb-1 block text-xs text-ink/70">価格</span>
+          <span className="mb-1 block text-xs text-ink/70">価格(円)</span>
           <input type="number" min={0} value={price} onChange={(e) => setPrice(e.target.value)} className={`${inputClass} w-full sm:w-24`} />
         </label>
         <label className="block min-w-0 flex-1 sm:flex-none">
