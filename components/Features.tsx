@@ -52,7 +52,7 @@ const features = [
     icon: <WheatIcon />,
     title: "毎日に合う味",
     description:
-      "朝食、ランチ、軽食、手土産まで。日常のいろいろな場面に寄り添うベーグルです。",
+      "ランチ、おうち時間、手土産まで。日常のいろいろな場面に寄り添うベーグルです。",
   },
   {
     icon: <HandIcon />,

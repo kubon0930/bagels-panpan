@@ -37,7 +37,7 @@ npm run lint     # ESLint
 | `weekDays` / `openWeekDays` | Access の営業日カレンダーチップ用 |
 | `heroBadges` | Hero の英字情報バッジ |
 | `menuItems` | メニューの商品名・説明文・タグ・焼き色トーン・写真パス |
-| `conceptScenes` | Concept の「朝ごはん・ランチ・手土産」ミニカード |
+| `conceptScenes` | Concept の「ランチ・おうち時間・手土産」ミニカード |
 | `faqItems` | FAQ の質問と回答 |
 | `socialLinks` | Instagram・食べログの URL |
 | `googleMapsUrl` / `shopLatLng` | Google Map のプレイスURLと座標 |
