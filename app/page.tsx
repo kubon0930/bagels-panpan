@@ -59,13 +59,12 @@ export default function Home() {
       />
       {/*
         キーボード操作用のスキップリンク。
-        focus ではなく focus-visible を使う（ページ遷移時に Next.js が当てる
-        プログラム的なフォーカスでは表示させず、Tab 操作のときだけ表示するため）。
+        表示条件は globals.css の .skip-link で管理
+        （pointer: fine の環境で Tab フォーカスされたときだけ表示。
+        iOS Safari がページ遷移時のプログラム的フォーカスで
+        誤表示してしまうのを防ぐため、タッチ端末では常に非表示）。
       */}
-      <a
-        href="#main"
-        className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[60] focus-visible:rounded-full focus-visible:bg-navy focus-visible:px-5 focus-visible:py-2.5 focus-visible:text-paper"
-      >
+      <a href="#main" className="skip-link">
         本文へスキップ
       </a>
       <Header />

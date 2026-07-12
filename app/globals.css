@@ -81,6 +81,43 @@ body {
   outline-color: var(--color-paper);
 }
 
+/*
+ * キーボード操作用スキップリンク。
+ * 通常は視覚的に隠し、フォーカスが当たったときだけ表示する。
+ * iOS Safari 等はページ遷移時のプログラム的フォーカスも :focus-visible 扱いに
+ * するため、マウス／キーボード環境（pointer: fine）に限定して表示する
+ * （タッチ端末の画面利用ではスキップリンク自体が不要）。
+ */
+.skip-link {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@media (pointer: fine) {
+  .skip-link:focus-visible {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 60;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0.625rem 1.25rem;
+    overflow: visible;
+    clip: auto;
+    border-radius: 9999px;
+    background: var(--color-navy);
+    color: var(--color-paper);
+  }
+}
+
 /* 背景の小さなドット模様（currentColor で色を制御） */
 .dot-pattern {
   background-image: radial-gradient(currentColor 1.5px, transparent 1.6px);
