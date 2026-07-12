@@ -1,8 +1,9 @@
 import Image from "next/image";
-import BagelGraphic from "@/components/BagelGraphic";
+import BagelIllustration from "@/components/BagelIllustration";
 import FadeIn from "@/components/FadeIn";
 import SectionHeading from "@/components/SectionHeading";
 import { menuItems, socialLinks } from "@/data/site";
+import { normalizeBagelIllustration } from "@/lib/bagel-illustration";
 import { loadLineupItems, type LineupCard } from "@/lib/lineup-data";
 
 /**
@@ -22,7 +23,7 @@ export default async function Lineup() {
       nameJa: m.nameJa ?? null,
       description: m.description,
       tag: m.tag ?? null,
-      tone: m.tone ?? "golden",
+      illustration: normalizeBagelIllustration({ tone: m.tone ?? "golden" }),
       image: m.image ?? null,
     }));
 
@@ -60,10 +61,11 @@ export default async function Lineup() {
                       className="object-cover"
                     />
                   ) : (
-                    <BagelGraphic
+                    <BagelIllustration
                       className="h-28 w-28 transition-transform duration-500 group-hover:rotate-6 sm:h-32 sm:w-32"
                       holeColor="var(--color-cream)"
-                      tone={item.tone}
+                      base={item.illustration.base}
+                      topping={item.illustration.topping}
                     />
                   )}
                   {item.tag && (
