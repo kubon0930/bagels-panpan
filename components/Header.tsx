@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import { reservePath, shopInfo, socialLinks } from "@/data/site";
+import OutboundLink from "@/components/OutboundLink";
+import ReservationLink from "@/components/ReservationLink";
+import { shopInfo, socialLinks } from "@/data/site";
 
 const navItems = [
   { label: "Concept", href: "#concept" },
@@ -57,21 +58,22 @@ export default function Header() {
               {item.label}
             </a>
           ))}
-          <Link
-            href={reservePath}
+          <ReservationLink
+            buttonLocation="header"
+            text="予約する"
             className="rounded-full bg-toast px-5 py-2 text-sm font-bold text-navy-deep transition-all hover:-translate-y-0.5 hover:bg-navy hover:text-paper"
           >
             予約する
-          </Link>
-          <a
+          </ReservationLink>
+          <OutboundLink
             href={socialLinks.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
+            linkType="instagram"
+            text="Instagramを見る"
             className="rounded-full bg-navy px-5 py-2 text-sm font-medium text-paper transition-all hover:-translate-y-0.5 hover:bg-navy-deep"
           >
             Instagramを見る
             <span className="sr-only">（新しいタブで開きます）</span>
-          </a>
+          </OutboundLink>
         </nav>
 
         {/* モバイル：ハンバーガーボタン */}
@@ -137,23 +139,24 @@ export default function Header() {
                 </li>
               ))}
             </ul>
-            <Link
-              href={reservePath}
+            <ReservationLink
+              buttonLocation="menu"
+              text="予約販売を見る"
               onClick={() => setMenuOpen(false)}
               className="mt-5 block whitespace-nowrap rounded-full bg-toast py-3 text-center font-bold text-navy-deep transition-colors hover:bg-navy hover:text-paper"
             >
               予約販売を見る
-            </Link>
-            <a
+            </ReservationLink>
+            <OutboundLink
               href={socialLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkType="instagram"
+              text="Instagramを見る"
               onClick={() => setMenuOpen(false)}
               className="mt-3 block whitespace-nowrap rounded-full bg-navy py-3 text-center font-medium text-paper transition-colors hover:bg-navy-deep"
             >
               Instagramを見る
               <span className="sr-only">（新しいタブで開きます）</span>
-            </a>
+            </OutboundLink>
           </div>
         </nav>
       </div>

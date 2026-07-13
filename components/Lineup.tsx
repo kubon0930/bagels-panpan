@@ -1,6 +1,7 @@
 import Image from "next/image";
 import BagelIllustration from "@/components/BagelIllustration";
 import FadeIn from "@/components/FadeIn";
+import OutboundLink from "@/components/OutboundLink";
 import SectionHeading from "@/components/SectionHeading";
 import { menuItems, socialLinks } from "@/data/site";
 import { normalizeBagelIllustration } from "@/lib/bagel-illustration";
@@ -99,15 +100,15 @@ export default async function Lineup() {
           掲載している商品はラインナップ例です。
           <br />
           商品内容・価格は店頭または
-          <a
+          <OutboundLink
             href={socialLinks.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
+            linkType="instagram"
+            text="Instagram"
             className="mx-1 font-medium text-navy underline underline-offset-4 transition-colors hover:text-bagel"
           >
             Instagram
             <span className="sr-only">（新しいタブで開きます）</span>
-          </a>
+          </OutboundLink>
           にてご確認ください。
         </div>
       </div>

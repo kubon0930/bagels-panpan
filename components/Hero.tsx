@@ -1,12 +1,12 @@
 import Image from "next/image";
-import Link from "next/link";
 import BagelGraphic from "@/components/BagelGraphic";
 import BrandLogo from "@/components/BrandLogo";
+import OutboundLink from "@/components/OutboundLink";
+import ReservationLink from "@/components/ReservationLink";
 import {
   brandImages,
   businessHours,
   heroBadges,
-  reservePath,
   shopInfo,
   socialLinks,
 } from "@/data/site";
@@ -147,23 +147,24 @@ export default function Hero() {
 
           {/* スマホCTA：予約導線を主役に、Instagramは控えめに */}
           <div className="mx-auto max-w-sm space-y-3 md:hidden">
-            <Link
+            <ReservationLink
               id="hero-reserve-cta"
-              href={reservePath}
+              buttonLocation="hero"
+              text="予約販売を見る"
               className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-toast px-6 py-3.5 font-bold text-navy-deep shadow-warm transition-colors hover:bg-paper"
             >
               予約販売を見る
               <span aria-hidden="true">→</span>
-            </Link>
-            <a
+            </ReservationLink>
+            <OutboundLink
               href={socialLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkType="instagram"
+              text="Instagramで営業日を見る"
               className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-2xl border border-paper/40 px-6 py-3 text-sm font-medium text-paper transition-colors hover:bg-paper hover:text-navy"
             >
               Instagramで営業日を見る
               <span aria-hidden="true">→</span>
-            </a>
+            </OutboundLink>
             <p className="pt-1">
               <span className="inline-block whitespace-nowrap rounded-full border border-paper/20 bg-paper/10 px-4 py-1.5 text-[13px] tracking-wide text-paper/90">
                 {businessHours.oneLine}
@@ -179,15 +180,15 @@ export default function Hero() {
             >
               ラインナップを見る
             </a>
-            <a
+            <OutboundLink
               href={socialLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkType="instagram"
+              text="Instagramで営業日を見る"
               className="w-full whitespace-nowrap rounded-full border border-paper/40 px-8 py-3.5 text-center font-medium text-paper transition-all hover:-translate-y-0.5 hover:bg-paper hover:text-navy sm:w-auto"
             >
               Instagramで営業日を見る
               <span className="sr-only">（新しいタブで開きます）</span>
-            </a>
+            </OutboundLink>
           </div>
 
           {/* 営業情報ミニカード（PCのみ） */}
@@ -200,22 +201,23 @@ export default function Hero() {
               オープン時間は変更となる場合があります。
               <br className="hidden sm:block" />
               最新情報は
-              <a
+              <OutboundLink
                 href={socialLinks.instagram}
-                target="_blank"
-                rel="noopener noreferrer"
+                linkType="instagram"
+                text="Instagram"
                 className="mx-0.5 font-medium text-toast underline underline-offset-4 transition-colors hover:text-paper"
               >
                 Instagram
                 <span className="sr-only">（新しいタブで開きます）</span>
-              </a>
+              </OutboundLink>
               にてお知らせしています。
             </p>
           </div>
 
           {/* 予約販売への導線（PCのみ。スマホはHero CTAと追従CTAに集約） */}
-          <Link
-            href={reservePath}
+          <ReservationLink
+            buttonLocation="hero_card"
+            text="予約販売を見る"
             className="hidden rounded-2xl bg-paper px-6 py-4 text-left shadow-warm transition-all hover:-translate-y-0.5 md:block"
           >
             <span className="flex items-center justify-between gap-3">
@@ -227,7 +229,7 @@ export default function Hero() {
             <span className="mt-1 block text-xs leading-relaxed text-ink/70">
               暑い日や混雑時も、事前予約でスムーズにお受け取りいただけます。
             </span>
-          </Link>
+          </ReservationLink>
         </div>
 
         {/*

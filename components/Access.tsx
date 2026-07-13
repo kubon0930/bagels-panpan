@@ -1,6 +1,7 @@
 import Image from "next/image";
-import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
+import OutboundLink from "@/components/OutboundLink";
+import ReservationLink from "@/components/ReservationLink";
 import GoogleMap from "@/components/GoogleMap";
 import SectionHeading from "@/components/SectionHeading";
 import SoftCurve from "@/components/SoftCurve";
@@ -9,7 +10,6 @@ import {
   businessHours,
   googleMapsUrl,
   openWeekDays,
-  reservePath,
   shopInfo,
   socialLinks,
   weekDays,
@@ -31,12 +31,13 @@ const accessRows: { label: string; value: React.ReactNode }[] = [
   {
     label: "予約販売",
     value: (
-      <Link
-        href={reservePath}
+      <ReservationLink
+        buttonLocation="access"
+        text="受付中の販売日は予約ページにて"
         className="font-medium text-navy underline underline-offset-4 transition-colors hover:text-bagel"
       >
         受付中の販売日は予約ページにて
-      </Link>
+      </ReservationLink>
     ),
   },
   { label: "サービス", value: shopInfo.services },
@@ -44,15 +45,15 @@ const accessRows: { label: string; value: React.ReactNode }[] = [
   {
     label: "最新情報",
     value: (
-      <a
+      <OutboundLink
         href={socialLinks.instagram}
-        target="_blank"
-        rel="noopener noreferrer"
+        linkType="instagram"
+        text="Instagramをご確認ください"
         className="font-medium text-navy underline underline-offset-4 transition-colors hover:text-bagel"
       >
         Instagramをご確認ください
         <span className="sr-only">（新しいタブで開きます）</span>
-      </a>
+      </OutboundLink>
     ),
   },
 ];
@@ -102,15 +103,15 @@ function BusinessHoursCard() {
         オープン時間は変更となる場合があります。
         <br className="hidden sm:block" />
         営業日・臨時休業・焼き上がり情報は、随時
-        <a
+        <OutboundLink
           href={socialLinks.instagram}
-          target="_blank"
-          rel="noopener noreferrer"
+          linkType="instagram"
+          text="Instagram"
           className="mx-0.5 font-bold text-navy underline underline-offset-4 transition-colors hover:text-bagel"
         >
           Instagram
           <span className="sr-only">（新しいタブで開きます）</span>
-        </a>
+        </OutboundLink>
         にてお知らせします。
       </p>
     </div>
@@ -186,10 +187,10 @@ export default function Access() {
             <div className="flex flex-col gap-4">
               <StorefrontPhoto />
               <GoogleMap className="min-h-64 flex-1" />
-              <a
+              <OutboundLink
                 href={googleMapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+                linkType="map"
+                text="Google Mapで見る"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-navy px-8 py-3 text-center text-sm font-medium text-paper transition-all hover:-translate-y-0.5 hover:bg-navy-deep"
               >
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -198,7 +199,7 @@ export default function Access() {
                 </svg>
                 <span className="whitespace-nowrap">Google Mapで見る</span>
                 <span className="sr-only">（新しいタブで開きます）</span>
-              </a>
+              </OutboundLink>
             </div>
           </div>
         </div>

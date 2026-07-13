@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import ReserveHeader from "@/components/reserve/ReserveHeader";
 import { shopInfo, socialLinks } from "@/data/site";
+import { trackReservationComplete } from "@/lib/analytics";
 import { yen } from "@/lib/format";
 import {
   CART_STORAGE_KEY,
@@ -31,6 +32,19 @@ function CompleteInner() {
   }, []);
 
   const code = summary?.code ?? codeFromUrl ?? "";
+
+  // 予約完了イベント（予約番号が確定している場合のみ・番号ごとに1回だけ送信）
+  useEffect(() => {
+    if (!loaded || !code) return;
+    trackReservationComplete({
+      reservationId: code,
+      itemCount: summary?.items.length,
+      totalQuantity: summary?.items.reduce((s, i) => s + i.quantity, 0),
+      totalValue: summary?.total,
+      pickupDate: summary?.dayLabel,
+      paymentMethod: summary?.paymentLabel,
+    });
+  }, [loaded, code, summary]);
 
   return (
     <div className="min-h-screen bg-warm text-ink">
