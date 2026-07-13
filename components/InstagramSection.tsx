@@ -1,6 +1,7 @@
-import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import { instagramCards, reservePath, socialLinks } from "@/data/site";
+import OutboundLink from "@/components/OutboundLink";
+import ReservationLink from "@/components/ReservationLink";
+import { instagramCards, socialLinks } from "@/data/site";
 
 function InstagramIcon({ className = "" }: { className?: string }) {
   return (
@@ -72,25 +73,26 @@ export default function InstagramSection() {
             ))}
           </ul>
 
-          <a
+          <OutboundLink
             href={socialLinks.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
+            linkType="instagram"
+            text="Instagramで最新情報を見る"
             className="mt-9 inline-flex items-center gap-2 rounded-full bg-paper px-10 py-3.5 font-bold text-navy shadow-warm transition-all hover:-translate-y-0.5 hover:bg-toast hover:text-navy-deep"
           >
             <InstagramIcon className="h-5 w-5" />
             Instagramで最新情報を見る
             <span className="sr-only">（新しいタブで開きます）</span>
-          </a>
+          </OutboundLink>
 
           <p className="mt-5 text-sm text-paper/80">
             事前予約は
-            <Link
-              href={reservePath}
+            <ReservationLink
+              buttonLocation="instagram_section"
+              text="予約販売ページ"
               className="mx-1 font-bold text-toast underline underline-offset-4 hover:text-paper"
             >
               予約販売ページ
-            </Link>
+            </ReservationLink>
             から
           </p>
         </div>

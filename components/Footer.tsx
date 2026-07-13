@@ -1,6 +1,7 @@
-import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
-import { businessHours, reservePath, shopInfo, socialLinks } from "@/data/site";
+import OutboundLink from "@/components/OutboundLink";
+import ReservationLink from "@/components/ReservationLink";
+import { businessHours, shopInfo, socialLinks } from "@/data/site";
 
 export default function Footer() {
   return (
@@ -30,30 +31,31 @@ export default function Footer() {
           </div>
 
           <nav aria-label="外部リンク" className="flex flex-col gap-3 text-sm">
-            <Link
-              href={reservePath}
+            <ReservationLink
+              buttonLocation="footer"
+              text="予約販売を見る"
               className="font-medium text-toast underline-offset-4 transition-colors hover:underline"
             >
               予約販売を見る
-            </Link>
-            <a
+            </ReservationLink>
+            <OutboundLink
               href={socialLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkType="instagram"
+              text="Instagram"
               className="text-paper/90 underline-offset-4 transition-colors hover:text-toast hover:underline"
             >
               Instagram
               <span className="sr-only">（新しいタブで開きます）</span>
-            </a>
-            <a
+            </OutboundLink>
+            <OutboundLink
               href={socialLinks.tabelog}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkType="tabelog"
+              text="食べログ"
               className="text-paper/90 underline-offset-4 transition-colors hover:text-toast hover:underline"
             >
               食べログ
               <span className="sr-only">（新しいタブで開きます）</span>
-            </a>
+            </OutboundLink>
           </nav>
         </div>
 

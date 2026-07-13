@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BagelGraphic from "@/components/BagelGraphic";
+import OutboundLink from "@/components/OutboundLink";
 import ReserveClient from "@/components/reserve/ReserveClient";
 import ReserveHeader from "@/components/reserve/ReserveHeader";
 import ReserveNotesBox from "@/components/reserve/ReserveNotesBox";
@@ -79,15 +80,15 @@ function EmptyState({ title, body }: { title: string; body: string }) {
       <p className="mx-auto mt-2.5 max-w-md text-sm leading-relaxed text-ink/75">
         {body}
       </p>
-      <a
+      <OutboundLink
         href={socialLinks.instagram}
-        target="_blank"
-        rel="noopener noreferrer"
+        linkType="instagram"
+        text="Instagramで最新情報を見る"
         className="mt-6 inline-flex whitespace-nowrap rounded-full bg-navy px-7 py-3 text-sm font-medium text-paper transition-all hover:-translate-y-0.5 hover:bg-navy-deep"
       >
         Instagramで最新情報を見る
         <span className="sr-only">（新しいタブで開きます）</span>
-      </a>
+      </OutboundLink>
     </div>
   );
 }

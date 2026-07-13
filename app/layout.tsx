@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { Noto_Sans_JP, Quicksand } from "next/font/google";
+import AnalyticsPageView from "@/components/AnalyticsPageView";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { brandImages, siteUrl } from "@/data/site";
 import "./globals.css";
 
@@ -27,6 +30,21 @@ export const metadata: Metadata = {
   title: "Bagels Panpan.｜中板橋の手づくりベーグル専門店",
   description:
     "Bagels Panpan.は、東京都板橋区・中板橋にある手づくりベーグル専門店です。営業日は水・金・土、12:00から売り切れまで。オープン時間は変更となる場合があるため、最新情報はInstagramをご確認ください。",
+  // 各ページの canonical URL（"./" は現在のパスに解決される）
+  alternates: {
+    canonical: "./",
+  },
+  // Google Search Console の所有権確認（未設定なら出力されない）
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
+  twitter: {
+    card: "summary_large_image",
+    title: "Bagels Panpan.｜中板橋の手づくりベーグル専門店",
+    description:
+      "もちっと香ばしいベーグルを、毎日の小さなしあわせに。東京都板橋区・中板橋のベーグル専門店です。",
+    images: [brandImages.ogp],
+  },
   openGraph: {
     title: "Bagels Panpan.｜中板橋の手づくりベーグル専門店",
     description:
@@ -56,7 +74,13 @@ export default function RootLayout({
       lang="ja"
       className={`${notoSansJp.variable} ${quicksand.variable} antialiased`}
     >
-      <body className="min-h-screen bg-warm text-ink">{children}</body>
+      <body className="min-h-screen bg-warm text-ink">
+        {children}
+        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <AnalyticsPageView />
+        </Suspense>
+      </body>
     </html>
   );
 }

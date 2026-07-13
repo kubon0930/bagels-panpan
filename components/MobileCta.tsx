@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import BagelGraphic from "@/components/BagelGraphic";
-import { reservePath } from "@/data/site";
+import ReservationLink from "@/components/ReservationLink";
 
 /**
  * スマホ下部の予約販売への固定CTA（トップページ専用）。
@@ -40,8 +39,9 @@ export default function MobileCta() {
           : "pointer-events-none translate-y-4 opacity-0"
       }`}
     >
-      <Link
-        href={reservePath}
+      <ReservationLink
+        buttonLocation="floating"
+        text="予約販売を見る"
         className="pointer-events-auto flex w-full max-w-md items-center justify-between gap-3 rounded-full border border-paper/15 bg-navy-deep/95 py-2 pl-2.5 pr-5 shadow-warm backdrop-blur transition-colors hover:bg-navy"
       >
         <span
@@ -56,7 +56,7 @@ export default function MobileCta() {
         <span aria-hidden="true" className="shrink-0 text-toast">
           →
         </span>
-      </Link>
+      </ReservationLink>
     </div>
   );
 }

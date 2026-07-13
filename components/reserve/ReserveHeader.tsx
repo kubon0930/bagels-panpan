@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BrandLogo from "@/components/BrandLogo";
+import OutboundLink from "@/components/OutboundLink";
 import { shopInfo, socialLinks } from "@/data/site";
 
 /** 予約・法務ページ共通のシンプルなヘッダー（公式サイトへ戻る導線つき） */
@@ -14,15 +15,15 @@ export default function ReserveHeader() {
           <BrandLogo size={34} />
           <span className="whitespace-nowrap">{shopInfo.name}</span>
         </Link>
-        <a
+        <OutboundLink
           href={socialLinks.instagram}
-          target="_blank"
-          rel="noopener noreferrer"
+          linkType="instagram"
+          text="Instagram"
           className="rounded-full border border-navy/30 px-4 py-1.5 text-xs font-medium text-navy transition-all hover:bg-navy hover:text-paper sm:text-sm"
         >
           Instagram
           <span className="sr-only">（新しいタブで開きます）</span>
-        </a>
+        </OutboundLink>
       </div>
     </header>
   );

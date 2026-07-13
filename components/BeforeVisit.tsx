@@ -1,5 +1,6 @@
-import Link from "next/link";
-import { businessHours, reservePath, socialLinks } from "@/data/site";
+import OutboundLink from "@/components/OutboundLink";
+import ReservationLink from "@/components/ReservationLink";
+import { businessHours, socialLinks } from "@/data/site";
 
 /**
  * Hero直下の「ご来店前に」カード。
@@ -43,8 +44,9 @@ export default function BeforeVisit() {
           </p>
 
           {/* 予約販売の案内 */}
-          <Link
-            href={reservePath}
+          <ReservationLink
+            buttonLocation="before_visit"
+            text="予約販売を見る"
             className="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-navy px-5 py-4 text-paper transition-all hover:-translate-y-0.5 hover:bg-navy-deep"
           >
             <span className="text-sm leading-relaxed">
@@ -57,18 +59,18 @@ export default function BeforeVisit() {
             <span aria-hidden="true" className="shrink-0 text-toast">
               →
             </span>
-          </Link>
+          </ReservationLink>
 
           <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <a
+            <OutboundLink
               href={socialLinks.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
+              linkType="instagram"
+              text="Instagramで最新情報を見る"
               className="w-full rounded-full bg-navy px-7 py-3 text-center text-sm font-medium text-paper transition-all hover:-translate-y-0.5 hover:bg-navy-deep sm:w-auto"
             >
               Instagramで最新情報を見る
               <span className="sr-only">（新しいタブで開きます）</span>
-            </a>
+            </OutboundLink>
             <a
               href="#access"
               className="w-full rounded-full border border-navy/40 px-7 py-3 text-center text-sm font-medium text-navy transition-all hover:-translate-y-0.5 hover:bg-navy hover:text-paper sm:w-auto"
