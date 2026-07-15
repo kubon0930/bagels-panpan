@@ -106,7 +106,7 @@ export default function Hero() {
 
           {/* サブコピー（スマホは短く、PCは従来どおり） */}
           <p className="leading-relaxed text-paper/85 md:hidden">
-            中板橋の小さなネイビーベーグル専門店、
+            中板橋の小さなベーグル店、
             <br />
             <span className="whitespace-nowrap">{shopInfo.name}</span>です。
           </p>
