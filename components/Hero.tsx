@@ -106,14 +106,14 @@ export default function Hero() {
 
           {/* サブコピー（スマホは短く、PCは従来どおり） */}
           <p className="leading-relaxed text-paper/85 md:hidden">
-            中板橋の小さなネイビーベーグル専門店、
+            中板橋の小さなベーグル店、
             <br />
             <span className="whitespace-nowrap">{shopInfo.name}</span>です。
           </p>
           <p className="hidden leading-loose text-paper/85 md:block">
             {shopInfo.name}は、東京都板橋区・中板橋にある
             <br className="hidden sm:block" />
-            ネイビーの小さなベーグル専門店です。
+            小さなベーグル店です。
           </p>
 
           {/* スマホ用メインビジュアル：ベーグルの穴に丸型ロゴ */}

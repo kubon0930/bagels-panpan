@@ -57,7 +57,7 @@ export default function Concept() {
 
           <div className="mx-auto mt-10 max-w-2xl space-y-6 text-center leading-loose text-ink/85">
             <p>
-              {shopInfo.name}は、中板橋の街にある小さなベーグル専門店です。
+              {shopInfo.name}は、中板橋の街にある小さなベーグル店です。
               <br />
               ネイビーの扉を開けると、その日焼き上がったベーグルが並びます。
             </p>
