@@ -113,7 +113,7 @@ export default function Hero() {
           <p className="hidden leading-loose text-paper/85 md:block">
             {shopInfo.name}は、東京都板橋区・中板橋にある
             <br className="hidden sm:block" />
-            ネイビーの小さなベーグル専門店です。
+            小さなベーグル店です。
           </p>
 
           {/* スマホ用メインビジュアル：ベーグルの穴に丸型ロゴ */}
