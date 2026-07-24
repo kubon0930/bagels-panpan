@@ -13,6 +13,7 @@ type Dashboard = {
   productCounts: { name: string; qty: number }[];
   slotCounts: { label: string; count: number; capacity: number | null }[];
   notPickedUp: number;
+  pickedUp: number;
   soldOut: string[];
 };
 
@@ -49,6 +50,7 @@ function Dashboard() {
           productCounts: [],
           slotCounts: [],
           notPickedUp: 0,
+          pickedUp: 0,
           soldOut: [],
         });
         setLoading(false);
@@ -94,6 +96,7 @@ function Dashboard() {
       const notPickedUp = activeOrders.filter((o) =>
         ["confirmed", "preparing", "ready"].includes(o.order_status),
       ).length;
+      const pickedUp = activeOrders.filter((o) => o.order_status === "picked_up").length;
 
       const soldOut = (items ?? [])
         .filter((it) => it.stock_quantity - it.reserved_quantity <= 0)
@@ -110,6 +113,7 @@ function Dashboard() {
           capacity: s.capacity,
         })),
         notPickedUp,
+        pickedUp,
         soldOut,
       });
       setLoading(false);
@@ -143,6 +147,24 @@ function Dashboard() {
         <>
           <p className="mt-6 text-sm text-ink/70">次回販売日</p>
           <p className="text-lg font-bold text-navy">{data.dayLabel}</p>
+
+          {/* 今日の受け取り */}
+          <div className="mt-4 rounded-card border-2 border-navy/15 bg-warm p-5 shadow-warm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-sm font-bold text-bagel">今日の受け取り</h2>
+              <Link
+                href="/admin/pickups"
+                className="rounded-full bg-navy px-5 py-2 text-sm font-bold text-paper hover:bg-navy-deep"
+              >
+                受け取り管理を開く →
+              </Link>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-3">
+              <BigStat label="未受け取り" value={data.notPickedUp} accent />
+              <BigStat label="受け取り済み" value={data.pickedUp} />
+              <BigStat label="残り" value={data.notPickedUp} />
+            </div>
+          </div>
 
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <Stat label="予約数" value={`${data.orderCount}件`} />
@@ -207,6 +229,15 @@ function Stat({ label, value, accent }: { label: string; value: string; accent?:
     <div className={`rounded-card border p-5 ${accent ? "border-toast/50 bg-toast/10" : "border-line bg-warm"}`}>
       <p className="text-xs text-ink/60">{label}</p>
       <p className="mt-1 text-xl font-bold text-navy">{value}</p>
+    </div>
+  );
+}
+
+function BigStat({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
+  return (
+    <div className={`rounded-xl border p-3 text-center ${accent ? "border-navy/40 bg-navy/5" : "border-line bg-cream"}`}>
+      <p className="text-xs text-ink/60">{label}</p>
+      <p className={`mt-1 text-3xl font-bold ${accent ? "text-navy" : "text-ink/70"}`}>{value}</p>
     </div>
   );
 }

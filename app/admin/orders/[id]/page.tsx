@@ -115,9 +115,18 @@ function OrderDetail() {
         ← 予約一覧へ
       </Link>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-2xl font-bold text-navy">{order.reservation_code}</h1>
-        <span className="text-sm text-ink/60">受付：{formatDateTimeShort(order.created_at)}</span>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold text-navy">{order.reservation_code}</h1>
+          <span className="text-sm text-ink/60">受付：{formatDateTimeShort(order.created_at)}</span>
+        </div>
+        <Link
+          href={`/admin/print?ids=${order.id}`}
+          target="_blank"
+          className="rounded-full bg-navy px-6 py-2.5 text-sm font-bold text-paper hover:bg-navy-deep"
+        >
+          🖨 注文票を印刷
+        </Link>
       </div>
 
       {/* ステータス変更 */}

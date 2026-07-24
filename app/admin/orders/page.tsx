@@ -29,6 +29,7 @@ function Orders() {
   const [orderStatus, setOrderStatus] = useState<OrderStatus | "">("");
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus | "">("");
   const [keyword, setKeyword] = useState("");
+  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -79,6 +80,7 @@ function Orders() {
         note: o.customer_note ?? "",
       })),
     );
+    setSelected(new Set());
   }, [dayId, days]);
 
   useEffect(() => {
@@ -91,7 +93,7 @@ function Orders() {
       if (paymentStatus && r.paymentStatus !== paymentStatus) return false;
       if (keyword) {
         const k = keyword.toLowerCase();
-        const hay = `${r.name} ${r.phone} ${r.email} ${r.items.map((i) => i.name).join(" ")}`.toLowerCase();
+        const hay = `${r.code} ${r.name} ${r.phone} ${r.email} ${r.items.map((i) => i.name).join(" ")}`.toLowerCase();
         if (!hay.includes(k)) return false;
       }
       return true;
@@ -100,21 +102,54 @@ function Orders() {
 
   if (loading) return <p className="text-ink/60">読み込み中…</p>;
 
-  const selectClass = "rounded-lg border border-line bg-cream px-3 py-2 text-sm outline-none focus:border-navy";
+  const selectClass =
+    "rounded-lg border border-line bg-cream px-3 py-2.5 text-base outline-none focus:border-navy";
   const dayLabel = days.find((d) => d.id === dayId)?.date ?? "";
+
+  // 「今日」の販売日（受け取り時間順の一括印刷用）
+  const todayStr = new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD（ローカル）
+  const todayDay = days.find((d) => d.date === todayStr);
+
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    setSelected((prev) =>
+      prev.size === filtered.length ? new Set() : new Set(filtered.map((r) => r.id)),
+    );
+  }
+
+  const selectedIds = filtered.filter((r) => selected.has(r.id)).map((r) => r.id);
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-navy">予約一覧</h1>
-        <button
-          type="button"
-          onClick={() => downloadOrdersCsv(filtered, dayLabel)}
-          disabled={filtered.length === 0}
-          className="rounded-full border border-navy/30 px-5 py-2.5 text-sm font-medium text-navy hover:bg-navy hover:text-paper disabled:opacity-40"
-        >
-          CSVで出力
-        </button>
+        <h1 className="text-2xl font-bold text-navy">予約一覧</h1>
+        <div className="flex flex-wrap gap-2">
+          {todayDay && (
+            <Link
+              href={`/admin/print?day=${todayDay.id}&sort=pickup`}
+              target="_blank"
+              className="rounded-full bg-toast px-5 py-2.5 text-sm font-bold text-navy-deep hover:bg-navy hover:text-paper"
+            >
+              🖨 今日の注文票を印刷
+            </Link>
+          )}
+          <button
+            type="button"
+            onClick={() => downloadOrdersCsv(filtered, dayLabel)}
+            disabled={filtered.length === 0}
+            className="rounded-full border border-navy/30 px-5 py-2.5 text-sm font-medium text-navy hover:bg-navy hover:text-paper disabled:opacity-40"
+          >
+            CSVで出力
+          </button>
+        </div>
       </div>
 
       {days.length === 0 ? (
@@ -146,37 +181,77 @@ function Orders() {
               type="search"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              placeholder="名前・電話・商品で検索"
+              placeholder="予約番号・名前・電話・商品で検索"
               className={`${selectClass} min-w-52 flex-1`}
             />
           </div>
 
-          <p className="mt-4 text-sm text-ink/60">{filtered.length}件</p>
-
-          <div className="mt-2 space-y-3">
-            {filtered.map((r) => (
+          {/* 選択操作バー */}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-ink/70">
+                <input
+                  type="checkbox"
+                  checked={filtered.length > 0 && selected.size === filtered.length}
+                  onChange={toggleAll}
+                  className="h-5 w-5 accent-navy"
+                />
+                すべて選択
+              </label>
+              <span className="text-sm text-ink/60">
+                {filtered.length}件{selected.size > 0 ? `（${selected.size}件選択中）` : ""}
+              </span>
+            </div>
+            {selectedIds.length > 0 && (
               <Link
-                key={r.id}
-                href={`/admin/orders/${r.id}`}
-                className="block rounded-card border border-line bg-warm p-4 shadow-warm transition-colors hover:border-navy/40"
+                href={`/admin/print?ids=${selectedIds.join(",")}`}
+                target="_blank"
+                className="rounded-full bg-navy px-5 py-2.5 text-sm font-bold text-paper hover:bg-navy-deep"
               >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="font-display font-bold text-navy">{r.code}</span>
-                  <div className="flex gap-2">
-                    <StatusChip>{ORDER_STATUS_LABELS[r.orderStatus]}</StatusChip>
-                    <StatusChip subtle>{PAYMENT_STATUS_LABELS[r.paymentStatus]}</StatusChip>
-                  </div>
-                </div>
-                <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm">
-                  <span className="font-medium">{r.name}様</span>
-                  <span className="text-ink/60">{r.slotLabel}</span>
-                </div>
-                <p className="mt-1 text-sm text-ink/70">
-                  {r.items.map((i) => `${i.name}×${i.quantity}`).join("、")}
-                </p>
-                <p className="mt-1 text-sm font-bold text-navy">{yen(r.total)}</p>
+                🖨 選択した{selectedIds.length}件の注文票を印刷
               </Link>
-            ))}
+            )}
+          </div>
+
+          <div className="mt-3 space-y-3">
+            {filtered.map((r) => {
+              const checked = selected.has(r.id);
+              return (
+                <div
+                  key={r.id}
+                  className={`flex items-stretch gap-3 rounded-card border bg-warm shadow-warm transition-colors ${
+                    checked ? "border-navy" : "border-line"
+                  }`}
+                >
+                  <label className="flex cursor-pointer items-center pl-4">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleSelect(r.id)}
+                      className="h-6 w-6 accent-navy"
+                      aria-label={`${r.name}様を選択`}
+                    />
+                  </label>
+                  <Link href={`/admin/orders/${r.id}`} className="flex-1 py-4 pr-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="font-display font-bold text-navy">{r.code}</span>
+                      <div className="flex gap-2">
+                        <StatusChip>{ORDER_STATUS_LABELS[r.orderStatus]}</StatusChip>
+                        <StatusChip subtle>{PAYMENT_STATUS_LABELS[r.paymentStatus]}</StatusChip>
+                      </div>
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
+                      <span className="text-lg font-bold">{r.name}様</span>
+                      <span className="text-sm text-ink/60">{r.slotLabel}</span>
+                    </div>
+                    <p className="mt-1 text-sm text-ink/70">
+                      {r.items.map((i) => `${i.name}×${i.quantity}`).join("、")}
+                    </p>
+                    <p className="mt-1 text-sm font-bold text-navy">{yen(r.total)}</p>
+                  </Link>
+                </div>
+              );
+            })}
             {filtered.length === 0 && (
               <p className="py-8 text-center text-sm text-ink/60">該当する予約はありません。</p>
             )}

@@ -16,10 +16,90 @@ export default function SalesDaysPage() {
 
 type DayWithSlots = SalesDay & { slots: PickupSlot[] };
 
+/**
+ * 販売日を丸ごと複製する（商品・受け取り時間帯・受付設定をコピー）。
+ * 注文/予約/予約済み数量/Stripe情報はコピーしない。
+ * 複製後は「非公開・受付停止」で作成する。
+ */
+async function duplicateSalesDay(
+  source: SalesDay,
+  newDate: string,
+): Promise<{ error?: string }> {
+  const supabase = getSupabaseBrowser();
+  if (!supabase) return { error: "システムが未設定です。" };
+
+  // 元の日付との差分だけ、受付・受け取り日時をずらす
+  const offsetMs =
+    new Date(`${newDate}T00:00:00`).getTime() -
+    new Date(`${source.date}T00:00:00`).getTime();
+  const shift = (iso: string | null) =>
+    iso ? new Date(new Date(iso).getTime() + offsetMs).toISOString() : null;
+
+  // 1. 販売日
+  const { data: newDay, error: dayErr } = await supabase
+    .from("sales_days")
+    .insert({
+      date: newDate,
+      title: source.title,
+      description: source.description,
+      note: source.note,
+      pickup_start_time: source.pickup_start_time,
+      pickup_end_time: source.pickup_end_time,
+      reservation_start_at: shift(source.reservation_start_at),
+      reservation_end_at: shift(source.reservation_end_at),
+      is_public: false,
+      is_accepting_orders: false,
+    })
+    .select("id")
+    .single();
+  if (dayErr || !newDay) return { error: "販売日の作成に失敗しました。" };
+
+  // 2. 受け取り時間帯（予約済み数はコピーしない）
+  const { data: slots } = await supabase
+    .from("pickup_slots")
+    .select("*")
+    .eq("sales_day_id", source.id);
+  if (slots && slots.length > 0) {
+    await supabase.from("pickup_slots").insert(
+      slots.map((s) => ({
+        sales_day_id: newDay.id,
+        label: s.label,
+        start_time: s.start_time,
+        end_time: s.end_time,
+        capacity: s.capacity,
+        is_public: s.is_public,
+      })),
+    );
+  }
+
+  // 3. 販売商品（予約済み数量はコピーしない＝0から）
+  const { data: items } = await supabase
+    .from("sales_items")
+    .select("*")
+    .eq("sales_day_id", source.id);
+  if (items && items.length > 0) {
+    await supabase.from("sales_items").insert(
+      items.map((it) => ({
+        sales_day_id: newDay.id,
+        product_id: it.product_id,
+        price: it.price,
+        stock_quantity: it.stock_quantity,
+        display_order: it.display_order,
+        is_public: it.is_public,
+        is_recommended: it.is_recommended,
+        is_seasonal: it.is_seasonal,
+      })),
+    );
+  }
+
+  return {};
+}
+
 function SalesDays() {
   const [days, setDays] = useState<DayWithSlots[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
+  const [duplicating, setDuplicating] = useState<DayWithSlots | null>(null);
 
   const load = useCallback(async () => {
     const supabase = getSupabaseBrowser();
@@ -46,7 +126,7 @@ function SalesDays() {
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-navy">販売日の管理</h1>
+        <h1 className="text-2xl font-bold text-navy">販売日の管理</h1>
         <button
           type="button"
           onClick={() => setShowCreate((v) => !v)}
@@ -72,10 +152,110 @@ function SalesDays() {
       ) : (
         <div className="mt-6 space-y-4">
           {days.map((day) => (
-            <DayCard key={day.id} day={day} onChange={load} />
+            <DayCard
+              key={day.id}
+              day={day}
+              onChange={load}
+              onDuplicate={() => setDuplicating(day)}
+            />
           ))}
         </div>
       )}
+
+      {duplicating && (
+        <DuplicateModal
+          source={duplicating}
+          onClose={() => setDuplicating(null)}
+          onDone={() => {
+            setDuplicating(null);
+            load();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function DuplicateModal({
+  source,
+  onClose,
+  onDone,
+}: {
+  source: SalesDay;
+  onClose: () => void;
+  onDone: () => void;
+}) {
+  // 既定の新しい日付＝元の販売日の1週間後
+  const defaultNew = new Date(`${source.date}T00:00:00`);
+  defaultNew.setDate(defaultNew.getDate() + 7);
+  const [newDate, setNewDate] = useState(defaultNew.toLocaleDateString("sv-SE"));
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  async function run() {
+    if (!newDate) return;
+    setBusy(true);
+    setError("");
+    const { error: err } = await duplicateSalesDay(source, newDate);
+    setBusy(false);
+    if (err) {
+      setError(err);
+      return;
+    }
+    onDone();
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 grid place-items-center bg-navy-deep/40 p-5"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-md rounded-card border border-line bg-warm p-6 shadow-warm-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h2 className="text-lg font-bold text-navy">販売日を複製</h2>
+        <p className="mt-3 text-sm text-ink/70">コピー元</p>
+        <p className="text-lg font-bold text-navy">{formatDateJa(source.date)}</p>
+
+        <div className="my-4 text-center text-2xl text-ink/40">↓</div>
+
+        <label className="block">
+          <span className="mb-1 block text-sm font-medium text-ink/70">新しい販売日</span>
+          <input
+            type="date"
+            value={newDate}
+            onChange={(e) => setNewDate(e.target.value)}
+            className="w-full rounded-lg border border-line bg-cream px-3 py-3 text-lg outline-none focus:border-navy"
+          />
+        </label>
+
+        <p className="mt-3 rounded-lg bg-cream px-4 py-3 text-xs leading-relaxed text-ink/70">
+          商品・価格・販売数・表示順・おすすめ・季節・受け取り時間帯・受付設定をコピーします。
+          <br />
+          注文・予約・売上はコピーしません。作成後は「非公開・受付停止」の状態です。
+        </p>
+
+        {error && <p className="mt-3 text-sm text-bagel">{error}</p>}
+
+        <div className="mt-5 flex gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 rounded-full border border-navy/30 px-5 py-3 text-sm font-medium text-navy hover:bg-navy hover:text-paper"
+          >
+            キャンセル
+          </button>
+          <button
+            type="button"
+            onClick={run}
+            disabled={busy || !newDate}
+            className="flex-1 rounded-full bg-navy px-5 py-3 text-sm font-bold text-paper hover:bg-navy-deep disabled:opacity-50"
+          >
+            {busy ? "複製中…" : "複製する"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -153,7 +333,15 @@ function CreateDayForm({ onCreated }: { onCreated: () => void }) {
   );
 }
 
-function DayCard({ day, onChange }: { day: DayWithSlots; onChange: () => void }) {
+function DayCard({
+  day,
+  onChange,
+  onDuplicate,
+}: {
+  day: DayWithSlots;
+  onChange: () => void;
+  onDuplicate: () => void;
+}) {
   const [busy, setBusy] = useState(false);
 
   async function toggle(field: "is_public" | "is_accepting_orders") {
@@ -238,9 +426,16 @@ function DayCard({ day, onChange }: { day: DayWithSlots; onChange: () => void })
               : ""}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Toggle label="公開" on={day.is_public} onClick={() => toggle("is_public")} disabled={busy} />
           <Toggle label="受付中" on={day.is_accepting_orders} onClick={() => toggle("is_accepting_orders")} disabled={busy} />
+          <button
+            type="button"
+            onClick={onDuplicate}
+            className="rounded-full border border-navy/40 px-4 py-1.5 text-xs font-bold text-navy hover:bg-navy hover:text-paper"
+          >
+            複製
+          </button>
         </div>
       </div>
 
