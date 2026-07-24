@@ -21,6 +21,7 @@ function paymentMethodLabel(method: string | null, status: PaymentStatus): strin
 type RawOrder = {
   reservation_code: string;
   customer_name: string;
+  customer_name_kana: string | null;
   customer_note: string | null;
   total: number;
   order_status: OrderStatus;
@@ -57,7 +58,7 @@ function PrintInner() {
       return;
     }
     const select =
-      "reservation_code, customer_name, customer_note, total, order_status, payment_status, payment_method, created_at, sales_day:sales_days(date), pickup_slot:pickup_slots(label, start_time), items:order_items(product_name, quantity)";
+      "reservation_code, customer_name, customer_name_kana, customer_note, total, order_status, payment_status, payment_method, created_at, sales_day:sales_days(date), pickup_slot:pickup_slots(label, start_time), items:order_items(product_name, quantity)";
 
     let query = supabase.from("orders").select(select);
     if (ids) {
@@ -79,6 +80,7 @@ function PrintInner() {
     const mapped: (SlipOrder & { _sort: string })[] = raw.map((o) => ({
       code: o.reservation_code,
       customerName: o.customer_name,
+      customerNameKana: o.customer_name_kana,
       date: o.sales_day?.date ?? "",
       slotLabel: o.pickup_slot?.label ?? "",
       items: (o.items ?? []).map((i) => ({ name: i.product_name, quantity: i.quantity })),
@@ -178,7 +180,8 @@ function PrintInner() {
           padding-bottom: 6px;
         }
         .slip-code { font-size: 15pt; font-weight: 700; color: #102050; letter-spacing: 0.04em; }
-        .slip-name { font-size: 20pt; font-weight: 700; margin-top: 2px; }
+        .slip-kana { font-size: 11pt; color: #444; margin-top: 3px; }
+        .slip-name { font-size: 20pt; font-weight: 700; margin-top: 1px; }
         .slip-pickup { text-align: right; }
         .slip-date { font-size: 13pt; font-weight: 700; }
         .slip-slot { font-size: 15pt; font-weight: 700; color: #102050; margin-top: 2px; }
@@ -228,13 +231,20 @@ function PrintInner() {
           .slip:nth-child(2n) { break-after: page; page-break-after: always; }
           .slip:last-child { break-after: auto; page-break-after: auto; }
           .slip-inner {
-            /* 印刷可能高さ ≈ 250-12=238mm。半分弱に収める（余白/線ぶんを差し引く） */
-            min-height: 110mm;
+            /* 2件で約204mm（印刷可能高さ約238mmに対し余裕あり）。
+               プリンタの余白が大きめでも確実に上下2件が収まるよう詰める */
+            min-height: 100mm;
             border: 1.5px solid #333;
             border-radius: 4px;
             padding: 5mm;
             box-sizing: border-box;
           }
+          /* 印刷時は文字と行間を少し詰めて2件に確実に収める */
+          .slip-name { font-size: 18pt; }
+          .slip-item { font-size: 14pt; padding: 3px 0; }
+          .slip-item-qty { font-size: 16pt; }
+          .slip-items { margin: 6px 0; }
+          .slip-head { padding-bottom: 4px; }
           .slip-cut { display: none; }  /* 上下2件の境界で切るため線は不要 */
         }
       `}</style>

@@ -185,6 +185,7 @@ function OrderDetail() {
       <div className="mt-4 rounded-card border border-line bg-warm p-5 shadow-warm">
         <p className="mb-3 text-sm font-bold text-bagel">お客様情報</p>
         <Row label="お名前" value={`${order.customer_name} 様`} />
+        {order.customer_name_kana && <Row label="フリガナ" value={order.customer_name_kana} />}
         <Row label="電話番号" value={<a href={`tel:${order.customer_phone}`} className="text-navy underline underline-offset-2">{order.customer_phone}</a>} />
         <Row label="メール" value={<a href={`mailto:${order.customer_email}`} className="break-all text-navy underline underline-offset-2">{order.customer_email}</a>} />
         {order.customer_note && <Row label="備考" value={order.customer_note} />}

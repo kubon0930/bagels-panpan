@@ -21,6 +21,7 @@ export default function ConfirmPage() {
   const [loaded, setLoaded] = useState(false);
 
   const [name, setName] = useState("");
+  const [nameKana, setNameKana] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [slotId, setSlotId] = useState("");
@@ -57,6 +58,14 @@ export default function ConfirmPage() {
       setError("受け取り時間帯を選択してください。");
       return;
     }
+    if (!name.trim()) {
+      setError("お名前を入力してください。");
+      return;
+    }
+    if (!nameKana.trim()) {
+      setError("お名前のフリガナを入力してください。");
+      return;
+    }
     if (!agreed) {
       setError("注意事項へのご同意が必要です。");
       return;
@@ -71,6 +80,7 @@ export default function ConfirmPage() {
           salesDayId: cart.salesDayId,
           pickupSlotId: slotId,
           customerName: name,
+          customerNameKana: nameKana,
           customerPhone: phone,
           customerEmail: email,
           customerNote: note,
@@ -213,6 +223,17 @@ export default function ConfirmPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoComplete="name"
+                  placeholder="山田 太郎"
+                  className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-ink outline-none focus:border-navy"
+                />
+              </Field>
+              <Field label="お名前（フリガナ）" required>
+                <input
+                  type="text"
+                  required
+                  value={nameKana}
+                  onChange={(e) => setNameKana(e.target.value)}
+                  placeholder="ヤマダ タロウ"
                   className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-ink outline-none focus:border-navy"
                 />
               </Field>

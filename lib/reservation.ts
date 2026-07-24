@@ -78,6 +78,7 @@ export type Order = {
   sales_day_id: string;
   pickup_slot_id: string | null;
   customer_name: string;
+  customer_name_kana: string | null;
   customer_phone: string;
   customer_email: string;
   customer_note: string | null;

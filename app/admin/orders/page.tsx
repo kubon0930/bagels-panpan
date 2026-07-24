@@ -68,6 +68,7 @@ function Orders() {
         dateLabel: day ? formatDateJa(day.date) : "",
         slotLabel: (o.pickup_slot as { label?: string } | null)?.label ?? "",
         name: o.customer_name,
+        nameKana: o.customer_name_kana ?? "",
         phone: o.customer_phone,
         email: o.customer_email,
         items: (o.items ?? []).map((i: { product_name: string; quantity: number }) => ({
@@ -241,7 +242,14 @@ function Orders() {
                       </div>
                     </div>
                     <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
-                      <span className="text-lg font-bold">{r.name}様</span>
+                      <span className="text-lg font-bold">
+                        {r.name}様
+                        {r.nameKana && (
+                          <span className="ml-2 text-xs font-normal text-ink/50">
+                            {r.nameKana}
+                          </span>
+                        )}
+                      </span>
                       <span className="text-sm text-ink/60">{r.slotLabel}</span>
                     </div>
                     <p className="mt-1 text-sm text-ink/70">
