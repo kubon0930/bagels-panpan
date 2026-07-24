@@ -12,6 +12,7 @@ type Body = {
   salesDayId?: string;
   pickupSlotId?: string;
   customerName?: string;
+  customerNameKana?: string;
   customerPhone?: string;
   customerEmail?: string;
   customerNote?: string;
@@ -43,10 +44,12 @@ export async function POST(request: NextRequest) {
 
   // 入力チェック
   const name = body.customerName?.trim();
+  const nameKana = body.customerNameKana?.trim();
   const phone = body.customerPhone?.trim();
   const email = body.customerEmail?.trim();
   if (!body.salesDayId || !body.pickupSlotId) return bad("販売日と受け取り時間帯を選択してください。");
   if (!name) return bad("お名前を入力してください。");
+  if (!nameKana) return bad("お名前のフリガナを入力してください。");
   if (!phone) return bad("電話番号を入力してください。");
   if (!email || !EMAIL_RE.test(email)) return bad("正しいメールアドレスを入力してください。");
   if (!body.agreed) return bad("注意事項へのご同意が必要です。");
@@ -63,6 +66,7 @@ export async function POST(request: NextRequest) {
     p_sales_day_id: body.salesDayId,
     p_pickup_slot_id: body.pickupSlotId,
     p_customer_name: name,
+    p_customer_name_kana: nameKana,
     p_customer_phone: phone,
     p_customer_email: email,
     p_customer_note: body.customerNote?.trim() || null,

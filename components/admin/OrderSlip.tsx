@@ -10,6 +10,7 @@ import {
 export type SlipOrder = {
   code: string;
   customerName: string;
+  customerNameKana: string | null;
   date: string; // "2026-07-24"
   slotLabel: string;
   items: { name: string; quantity: number }[];
@@ -32,6 +33,9 @@ export default function OrderSlip({ order }: { order: SlipOrder }) {
         <div className="slip-head">
           <div>
             <div className="slip-code">{order.code}</div>
+            {order.customerNameKana && (
+              <div className="slip-kana">{order.customerNameKana}</div>
+            )}
             <div className="slip-name">{order.customerName} 様</div>
           </div>
           <div className="slip-pickup">

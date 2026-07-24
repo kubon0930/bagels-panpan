@@ -23,6 +23,7 @@ type PickupOrder = {
   id: string;
   code: string;
   name: string;
+  nameKana: string | null;
   slotLabel: string;
   slotSort: string;
   items: { name: string; quantity: number }[];
@@ -76,7 +77,7 @@ function Pickups() {
     const { data } = await supabase
       .from("orders")
       .select(
-        "id, reservation_code, customer_name, customer_note, order_status, payment_status, pickup_slot:pickup_slots(label, start_time), items:order_items(product_name, quantity)",
+        "id, reservation_code, customer_name, customer_name_kana, customer_note, order_status, payment_status, pickup_slot:pickup_slots(label, start_time), items:order_items(product_name, quantity)",
       )
       .eq("sales_day_id", dayId);
 
@@ -87,6 +88,7 @@ function Pickups() {
           id: o.id as string,
           code: o.reservation_code as string,
           name: o.customer_name as string,
+          nameKana: (o.customer_name_kana as string | null) ?? null,
           slotLabel: slot?.label ?? "時間未設定",
           slotSort: slot?.start_time ?? "99:99",
           items: ((o.items ?? []) as { product_name: string; quantity: number }[]).map((i) => ({
@@ -270,6 +272,9 @@ function PickupCard({
     <div className={`rounded-card border-2 p-4 shadow-warm ${style}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
+          {order.nameKana && (
+            <p className="text-xs text-ink/50">{order.nameKana}</p>
+          )}
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xl font-bold">{order.name} 様</span>
             {cat === "picked" && (

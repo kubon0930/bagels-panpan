@@ -11,6 +11,7 @@ export type AdminOrderRow = {
   dateLabel: string;
   slotLabel: string;
   name: string;
+  nameKana: string;
   phone: string;
   email: string;
   items: { name: string; quantity: number }[];
@@ -35,6 +36,7 @@ export function downloadOrdersCsv(rows: AdminOrderRow[], dateLabel: string) {
     "受け取り日",
     "受け取り時間帯",
     "お客様名",
+    "フリガナ",
     "電話番号",
     "メールアドレス",
     "商品名",
@@ -55,6 +57,7 @@ export function downloadOrdersCsv(rows: AdminOrderRow[], dateLabel: string) {
         r.dateLabel,
         r.slotLabel,
         r.name,
+        r.nameKana,
         r.phone,
         r.email,
         itemsText,
