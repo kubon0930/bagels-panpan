@@ -11,6 +11,7 @@ const navItems = [
   { label: "販売日", href: "/admin/sales-days" },
   { label: "商品", href: "/admin/items" },
   { label: "予約一覧", href: "/admin/orders" },
+  { label: "受け取り", href: "/admin/pickups" },
   { label: "ラインナップ", href: "/admin/lineup" },
 ];
 
