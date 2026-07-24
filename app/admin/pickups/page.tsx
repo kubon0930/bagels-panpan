@@ -291,6 +291,9 @@ function PickupCard({
           <p className="mt-0.5 font-display text-sm text-ink/60">{order.code}</p>
           <p className="mt-2 text-base font-medium">
             {order.items.map((i) => `${i.name}×${i.quantity}`).join("、")}
+            <span className="ml-1 whitespace-nowrap text-sm text-ink/60">
+              （計{order.items.reduce((s, i) => s + i.quantity, 0)}個）
+            </span>
           </p>
           {order.note && (
             <p className="mt-1 text-sm text-bagel">備考：{order.note}</p>
