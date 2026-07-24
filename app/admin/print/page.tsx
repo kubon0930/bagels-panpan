@@ -212,25 +212,30 @@ function PrintInner() {
         }
 
         @media print {
-          @page { size: B5 portrait; margin: 8mm; }
+          /* B5(176×250mm)。余白を小さめにして印刷可能高さを稼ぎ、上下2件を確実に収める */
+          @page { size: B5 portrait; margin: 6mm; }
           html, body { background: #fff !important; }
           .no-print { display: none !important; }
           .print-root { background: #fff; }
           .slips { max-width: none; margin: 0; padding: 0; }
           .slip {
-            margin: 0 0 6mm;
+            margin: 0;
             border: none;
-            padding: 4mm 4mm 2mm;
-            break-inside: avoid;
+            padding: 0 0 2mm;
+            break-inside: avoid;      /* 1枚が途中で切れないように */
           }
+          /* 2件ごとに改ページ＝必ず1ページに上下2件 */
+          .slip:nth-child(2n) { break-after: page; page-break-after: always; }
+          .slip:last-child { break-after: auto; page-break-after: auto; }
           .slip-inner {
-            min-height: 108mm;
+            /* 印刷可能高さ ≈ 250-12=238mm。半分弱に収める（余白/線ぶんを差し引く） */
+            min-height: 110mm;
             border: 1.5px solid #333;
             border-radius: 4px;
-            padding: 6mm;
+            padding: 5mm;
             box-sizing: border-box;
           }
-          .slip-cut { margin-top: 2mm; }
+          .slip-cut { display: none; }  /* 上下2件の境界で切るため線は不要 */
         }
       `}</style>
     </div>
