@@ -170,7 +170,12 @@ export default function ConfirmPage() {
                 ))}
               </ul>
               <div className="mt-3 flex justify-between border-t border-line pt-3 font-bold text-navy">
-                <span>合計</span>
+                <span>
+                  合計
+                  <span className="ml-2 text-sm font-normal text-ink/60">
+                    （{cart.items.reduce((s, i) => s + i.quantity, 0)}個）
+                  </span>
+                </span>
                 <span>{yen(total)}</span>
               </div>
               <p className="mt-2 text-xs text-ink/60">

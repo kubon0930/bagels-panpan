@@ -176,7 +176,12 @@ function OrderDetail() {
           ))}
         </ul>
         <div className="mt-2 flex justify-between border-t border-line pt-3 font-bold text-navy">
-          <span>合計</span>
+          <span>
+            合計
+            <span className="ml-2 text-sm font-normal text-ink/60">
+              （{order.items.reduce((s, i) => s + i.quantity, 0)}個）
+            </span>
+          </span>
           <span>{yen(order.total)}</span>
         </div>
       </div>

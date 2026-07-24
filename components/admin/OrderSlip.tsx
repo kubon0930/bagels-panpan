@@ -56,7 +56,9 @@ export default function OrderSlip({ order }: { order: SlipOrder }) {
 
         {/* 合計・支払い・状態 */}
         <div className="slip-foot">
-          <div className="slip-total">合計 {yen(order.total)}</div>
+          <div className="slip-total">
+            合計 {order.items.reduce((s, i) => s + i.quantity, 0)}個 ／ {yen(order.total)}
+          </div>
           <div className="slip-meta">
             <span>{order.paymentMethodLabel}</span>
             <span>／</span>
